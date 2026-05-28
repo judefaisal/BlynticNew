@@ -6,7 +6,8 @@ import remarkBreaks from 'remark-breaks';
 import { Reveal } from './ui/Reveal';
 import Button from './ui/Button';
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../src/firebase';
+import { auth, db } from '../src/firebase';
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, Timestamp, orderBy, query } from 'firebase/firestore';
 import LoginModal from './LoginModal';
 
 interface DraftBlog {
@@ -18,6 +19,7 @@ interface DraftBlog {
 interface BlogPost extends DraftBlog {
   id: string;
   date: string;
+  createdAt?: any;
 }
 
 const Blog: React.FC = () => {
@@ -30,6 +32,8 @@ const Blog: React.FC = () => {
   const [currentDraft, setCurrentDraft] = useState<DraftBlog | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isLoadingBlogs, setIsLoadingBlogs] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
 
   const faqs = [
     {
@@ -50,12 +54,30 @@ const Blog: React.FC = () => {
     }
   ];
 
-  // Load blogs from localStorage
+  // Load blogs from Firebase
   useEffect(() => {
-    const savedBlogs = localStorage.getItem('blyntic_blogs');
-    if (savedBlogs) {
-      setBlogs(JSON.parse(savedBlogs));
-    }
+    const fetchBlogs = async () => {
+      try {
+        const blogsQuery = query(collection(db, 'blogs'), orderBy('createdAt', 'desc'));
+        const querySnapshot = await getDocs(blogsQuery);
+        const fetchedBlogs: BlogPost[] = [];
+        querySnapshot.forEach((doc) => {
+          fetchedBlogs.push({ id: doc.id, ...doc.data() } as BlogPost);
+        });
+        setBlogs(fetchedBlogs);
+      } catch (error: any) {
+        console.error("Error fetching blogs:", error);
+        if (error.code === 'permission-denied') {
+          alert('Error: Missing or insufficient permissions. Please update your Firestore security rules in the Firebase Console to allow read/write access to the "blogs" collection.');
+        } else {
+          alert(`Error fetching blogs: ${error.message}`);
+        }
+      } finally {
+        setIsLoadingBlogs(false);
+      }
+    };
+
+    fetchBlogs();
     
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
       setIsLoggedIn(!!user);
@@ -89,47 +111,66 @@ const Blog: React.FC = () => {
     window.scrollTo(0, 0);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!currentDraft) return;
+    setIsSaving(true);
     
     let safeImageUrl = currentDraft.imageUrl;
 
     try {
       if (isEditing && editingId) {
-        const updatedBlogs = blogs.map(b => 
+        const blogRef = doc(db, "blogs", editingId);
+        await updateDoc(blogRef, {
+          title: currentDraft.title,
+          content: currentDraft.content,
+          imageUrl: safeImageUrl
+        });
+        
+        setBlogs(blogs.map(b => 
           b.id === editingId 
             ? { ...b, title: currentDraft.title, content: currentDraft.content, imageUrl: safeImageUrl } 
             : b
-        );
-        localStorage.setItem('blyntic_blogs', JSON.stringify(updatedBlogs));
-        setBlogs(updatedBlogs);
+        ));
+        
         setIsEditing(false);
         setEditingId(null);
       } else {
-        const newBlog: BlogPost = {
-          ...currentDraft,
+        const dateStr = new Date().toLocaleDateString();
+        const newBlogData = {
+          title: currentDraft.title,
+          content: currentDraft.content,
           imageUrl: safeImageUrl,
-          id: Date.now().toString(),
-          date: new Date().toLocaleDateString(),
+          date: dateStr,
+          createdAt: Timestamp.now()
         };
         
-        const updatedBlogs = [newBlog, ...blogs];
-        localStorage.setItem('blyntic_blogs', JSON.stringify(updatedBlogs));
-        setBlogs(updatedBlogs);
+        const docRef = await addDoc(collection(db, "blogs"), newBlogData);
+        
+        const newBlog: BlogPost = {
+          id: docRef.id,
+          ...newBlogData
+        };
+        
+        setBlogs([newBlog, ...blogs]);
       }
       
       setIsCreating(false);
       setCurrentDraft(null);
     } catch (error) {
       console.error("Error saving blog:", error);
-      alert("Failed to save blog. The content might be too large for local storage. Try deleting some older blogs first.");
+      alert("Failed to save blog to Firebase.");
+    } finally {
+      setIsSaving(false);
     }
   };
 
-  const handleDelete = (id: string) => {
-    const updatedBlogs = blogs.filter(b => b.id !== id);
-    setBlogs(updatedBlogs);
-    localStorage.setItem('blyntic_blogs', JSON.stringify(updatedBlogs));
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteDoc(doc(db, "blogs", id));
+      setBlogs(blogs.filter(b => b.id !== id));
+    } catch (error) {
+      console.error("Error deleting blog:", error);
+    }
   };
 
   return (
@@ -241,11 +282,11 @@ const Blog: React.FC = () => {
                     </button>
                     <button 
                       onClick={handleSave}
-                      disabled={!currentDraft.title.trim() || !currentDraft.content.trim()}
+                      disabled={isSaving || !currentDraft.title.trim() || !currentDraft.content.trim()}
                       className="flex items-center gap-2 bg-blue-600 text-white px-10 py-4 rounded-full font-bold hover:bg-blue-700 transition-all shadow-xl shadow-blue-100 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <Save className="w-5 h-5" />
-                      Save Blog
+                      {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                      {isSaving ? 'Saving...' : 'Save Blog'}
                     </button>
                   </div>
                 </motion.div>
@@ -258,7 +299,11 @@ const Blog: React.FC = () => {
               animate={{ opacity: 1 }}
               className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
             >
-              {blogs.length === 0 ? (
+              {isLoadingBlogs ? (
+                <div className="col-span-full py-20 flex justify-center">
+                  <Loader2 className="w-12 h-12 animate-spin text-blue-600" />
+                </div>
+              ) : blogs.length === 0 ? (
                 <div className="col-span-full py-20 text-center bg-gray-50 rounded-[32px] border border-dashed border-gray-300">
                   <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-4" />
                   <p className="text-gray-500">No blogs yet. Start by creating one!</p>

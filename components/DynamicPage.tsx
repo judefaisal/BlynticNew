@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import JobDetails from './JobDetails';
 import BlogDetails from './BlogDetails';
+import { db } from '../src/firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 interface DynamicPageProps {
   slug: string;
@@ -10,31 +12,44 @@ const DynamicPage: React.FC<DynamicPageProps> = ({ slug }) => {
   const [type, setType] = useState<'job' | 'blog' | 'not-found' | null>(null);
 
   useEffect(() => {
-    const savedJobs = localStorage.getItem('blyntic_jobs');
-    if (savedJobs) {
-      const jobs = JSON.parse(savedJobs);
-      const foundJob = jobs.find((j: any) => 
-        j.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') === slug
-      );
-      if (foundJob) {
-        setType('job');
-        return;
+    const checkSlug = async () => {
+      const savedJobs = localStorage.getItem('blyntic_jobs');
+      if (savedJobs) {
+        const jobs = JSON.parse(savedJobs);
+        const foundJob = jobs.find((j: any) => 
+          j.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') === slug
+        );
+        if (foundJob) {
+          setType('job');
+          return;
+        }
       }
-    }
 
-    const savedBlogs = localStorage.getItem('blyntic_blogs');
-    if (savedBlogs) {
-      const blogs = JSON.parse(savedBlogs);
-      const foundBlog = blogs.find((b: any) => 
-        b.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') === slug
-      );
-      if (foundBlog) {
-        setType('blog');
-        return;
+      try {
+        const querySnapshot = await getDocs(collection(db, 'blogs'));
+        let foundBlog = false;
+        querySnapshot.forEach((doc) => {
+          const blogData = doc.data();
+          if (blogData.title) {
+            const currentSlug = blogData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+            if (currentSlug === slug) {
+              foundBlog = true;
+            }
+          }
+        });
+
+        if (foundBlog) {
+          setType('blog');
+          return;
+        }
+      } catch (error) {
+        console.error("Error checking blog in firestore:", error);
       }
-    }
 
-    setType('not-found');
+      setType('not-found');
+    };
+
+    checkSlug();
   }, [slug]);
 
   if (type === 'job') return <JobDetails slug={slug} />;

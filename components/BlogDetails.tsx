@@ -4,6 +4,8 @@ import { ArrowLeft, Calendar, Clock, Share2 } from 'lucide-react';
 import Markdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
 import { Reveal } from './ui/Reveal';
+import { db } from '../src/firebase';
+import { collection, getDocs, query } from 'firebase/firestore';
 
 interface BlogPost {
   id: string;
@@ -22,19 +24,42 @@ const BlogDetails: React.FC<BlogDetailsProps> = ({ slug: propSlug }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const slug = propSlug || window.location.hash.split('/').pop();
-    const savedBlogs = localStorage.getItem('blyntic_blogs');
-    
-    if (savedBlogs && slug) {
-      const blogs: BlogPost[] = JSON.parse(savedBlogs);
-      const foundBlog = blogs.find(b => 
-        b.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') === slug
-      );
-      setBlog(foundBlog || null);
-    }
-    setLoading(false);
-    window.scrollTo(0, 0);
-  }, []);
+    const fetchBlog = async () => {
+      const slug = propSlug || window.location.hash.split('/').pop();
+      if (!slug) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const blogsQuery = query(collection(db, 'blogs'));
+        const querySnapshot = await getDocs(blogsQuery);
+        
+        let foundBlog = null;
+        querySnapshot.forEach((doc) => {
+          const blogData = { id: doc.id, ...doc.data() } as BlogPost;
+          const currentSlug = blogData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+          if (currentSlug === slug) {
+            foundBlog = blogData;
+          }
+        });
+        
+        setBlog(foundBlog);
+      } catch (error: any) {
+        console.error("Error fetching blog:", error);
+        if (error.code === 'permission-denied') {
+          alert('Error: Missing or insufficient permissions. Please update your Firestore security rules to allow read access.');
+        } else {
+          alert(`Error fetching blog: ${error.message}`);
+        }
+      } finally {
+        setLoading(false);
+        window.scrollTo(0, 0);
+      }
+    };
+
+    fetchBlog();
+  }, [propSlug]);
 
   if (loading) {
     return (
