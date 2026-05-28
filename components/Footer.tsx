@@ -16,7 +16,7 @@ const Footer: React.FC = () => {
                 <span className="text-xl font-bold tracking-tight">BLYNTIC</span>
              </a>
              <p className="text-gray-500 leading-relaxed">
-               Workless more productivity.
+               Less Work More Growth AI
              </p>
              <div className="flex gap-4">
                <a href="https://www.linkedin.com/in/jude-al-attraqchi/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-600 hover:bg-black hover:text-white transition-colors">
@@ -33,12 +33,13 @@ const Footer: React.FC = () => {
 
           {/* Links 1 */}
           <div>
-            <h4 className="font-bold mb-6">Product</h4>
+            <h4 className="font-bold mb-6">Solutions</h4>
             <ul className="space-y-4 text-gray-600">
-              <li><a href="#" className="hover:text-black transition-colors">Features</a></li>
-              <li><a href="#" className="hover:text-black transition-colors">Pricing</a></li>
-              <li><a href="#" className="hover:text-black transition-colors">Integrations</a></li>
-              <li><a href="#" className="hover:text-black transition-colors">Enterprise</a></li>
+              <li><a href="#/ai-customer-service" className="hover:text-black transition-colors">AI Customer Service</a></li>
+              <li><a href="#/ai-chatbots" className="hover:text-black transition-colors">AI Chatbots</a></li>
+              <li><a href="#/smart-website" className="hover:text-black transition-colors">Smart Website</a></li>
+              <li><a href="#/full-ai-solution" className="hover:text-black transition-colors">Full AI Solution</a></li>
+              <li><a href="#/ai-marketing" className="hover:text-black transition-colors">AI Marketing</a></li>
             </ul>
           </div>
 
@@ -57,7 +58,7 @@ const Footer: React.FC = () => {
           <div>
             <h4 className="font-bold mb-6">Contact</h4>
             <ul className="space-y-4 text-gray-600">
-              <li>team@blyntic.dev</li>
+              <li><a href="mailto:jude@blyntic.co.nz" className="hover:text-black transition-colors">jude@blyntic.co.nz</a></li>
               <li>(+64) 223 037 330</li>
               <li>Auckland, New Zealand</li>
             </ul>
