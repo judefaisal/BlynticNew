@@ -17,7 +17,6 @@ import FullAISolution from './components/FullAISolution';
 import AIMarketing from './components/AIMarketing';
 import Contact from './components/ui/travel-connect-signin-1';
 import Footer from './components/Footer';
-import Chatbot from './components/Chatbot';
 
 function App() {
   const [currentHash, setCurrentHash] = useState(window.location.hash);
@@ -81,7 +80,6 @@ function App() {
       )}
       
       <Footer />
-      <Chatbot />
     </main>
   );
 }
