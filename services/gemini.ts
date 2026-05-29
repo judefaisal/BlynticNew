@@ -1,6 +1,24 @@
-import { GoogleGenAI, Type } from "@google/genai";
+// The @google/genai SDK is for server-side use only.
+// This client-side proxy mimics the interface we need for Chatbot.tsx.
+import { Type } from "@google/genai";
 
-export const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
+export const ai = {
+  models: {
+    generateContent: async (params: any) => {
+      const res = await fetch("/api/gemini/generate-content", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(params),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `HTTP error! status: ${res.status}`);
+      }
+      return res.json();
+    }
+  }
+};
 
 // Helper to compress base64 images to save localStorage space
 async function compressImage(base64Str: string, maxWidth = 800): Promise<string> {

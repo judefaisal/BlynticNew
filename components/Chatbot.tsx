@@ -25,6 +25,7 @@ const saveLeadFunction = {
 
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const [messages, setMessages] = useState<{ role: 'user' | 'model'; text: string }[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -186,8 +187,12 @@ Keep your responses very concise, professional and friendly.`,
         <div className="fixed bottom-6 right-6 w-80 md:w-96 h-[500px] bg-white rounded-2xl shadow-2xl flex flex-col z-50 overflow-hidden border border-gray-100">
           <div className="bg-blue-600 text-white p-4 py-3 flex justify-between items-center shrink-0">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                <UserIcon size={18} />
+              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center overflow-hidden shrink-0">
+                {!imageError ? (
+                  <img src="/amy.png" alt="Amy" className="w-full h-full object-cover" onError={() => setImageError(true)} />
+                ) : (
+                  <UserIcon size={18} />
+                )}
               </div>
               <div>
                 <h3 className="font-bold text-sm leading-tight">Amy</h3>
