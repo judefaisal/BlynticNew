@@ -1,6 +1,8 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Eye, EyeOff, ArrowRight, CheckCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
 
 // Helper function to merge class names
 const cn = (...classes: string[]) => {
@@ -390,13 +392,17 @@ const SignInCard = () => {
                 <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
                   Phone Number
                 </label>
-                <Input
-                  id="phone"
-                  type="tel"
+                <PhoneInput
+                  international
+                  defaultCountry="NZ"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="Enter your phone number"
-                  className="bg-gray-50 border-gray-200 placeholder:text-gray-400 text-gray-800 w-full focus:border-blue-500 focus:ring-blue-500"
+                  onChange={(val) => setPhone(val || '')}
+                  className="flex h-10 w-full rounded-md border bg-gray-50 border-gray-200 text-sm text-gray-800 placeholder:text-gray-400 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500"
+                  style={{"--PhoneInput-color--focus": "transparent", paddingLeft: "0.75rem", paddingRight: "0.75rem"} as React.CSSProperties}
+                  numberInputProps={{
+                    className: "flex-1 bg-transparent outline-none border-none border-l pl-2 text-sm text-gray-800 placeholder:text-gray-400",
+                    id: "phone"
+                  }}
                 />
               </div>
               <div>
