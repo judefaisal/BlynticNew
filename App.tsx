@@ -17,6 +17,7 @@ import FullAISolution from './components/FullAISolution';
 import AIMarketing from './components/AIMarketing';
 import Contact from './components/ui/travel-connect-signin-1';
 import Footer from './components/Footer';
+import VoiceflowWidget from './components/VoiceflowWidget';
 
 function App() {
   const [currentHash, setCurrentHash] = useState(window.location.hash);
@@ -76,6 +77,7 @@ function App() {
           <Stats />
           <HowItWorks />
           <WhyChoose />
+          <VoiceflowWidget />
         </>
       )}
       
