@@ -16,6 +16,22 @@ const VoiceflowWidget: React.FC = () => {
               url: "https://runtime-api.voiceflow.com"
             }
           });
+
+          // Inject custom CSS to make the launcher icon 25% larger
+          const checkShadowRoot = setInterval(() => {
+            const vfc = document.querySelector('voiceflow-chat');
+            if (vfc && vfc.shadowRoot) {
+              const style = document.createElement('style');
+              style.innerHTML = `
+                .vfrc-launcher {
+                  transform: scale(1.25) !important;
+                  transform-origin: center !important;
+                }
+              `;
+              vfc.shadowRoot.appendChild(style);
+              clearInterval(checkShadowRoot);
+            }
+          }, 500);
         }
       };
       script.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs";

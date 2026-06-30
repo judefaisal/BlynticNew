@@ -51,7 +51,7 @@ const Hero: React.FC = () => {
                   href="tel:098884632"
                   className="group inline-flex items-center gap-3 bg-blue-600 text-white px-8 py-4 rounded-full text-lg font-medium hover:bg-blue-700 hover:scale-105 transition-all shadow-lg"
                 >
-                  <PhoneCall size={24} className="animate-pulse" />
+                  <PhoneCall size={18} className="animate-pulse" />
                   <div className="flex flex-col text-left">
                     <span className="font-semibold leading-tight">Talk to AI Assistant</span>
                     <span className="text-sm text-blue-100 font-normal leading-tight">Call 09 888 4632</span>
