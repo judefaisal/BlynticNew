@@ -4,7 +4,6 @@ import Button from './ui/Button';
 import LottiePlayer from './ui/LottiePlayer';
 import { ArrowDownRight, ArrowRight, Sparkles, PhoneCall } from 'lucide-react';
 import { Reveal } from './ui/Reveal';
-import earthAnimation from '../src/assets/lottie/earth.json';
 
 const Hero: React.FC = () => {
   return (
@@ -74,7 +73,7 @@ const Hero: React.FC = () => {
                className="w-full h-full"
              >
                 <LottiePlayer 
-                  animationData={earthAnimation} 
+                  loadAnimation={() => import('../src/assets/lottie/earth.json')} 
                   className="w-full h-full"
                 />
              </motion.div>

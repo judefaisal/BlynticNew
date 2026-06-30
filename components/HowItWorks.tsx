@@ -2,7 +2,6 @@ import React from 'react';
 import { Reveal } from './ui/Reveal';
 import Button from './ui/Button';
 import LottiePlayer from './ui/LottiePlayer';
-import new2Animation from '../src/assets/lottie/691e040f1eb462228db0afb8_new2.json';
 
 const HowItWorks: React.FC = () => {
   return (
@@ -18,7 +17,7 @@ const HowItWorks: React.FC = () => {
           <div className="bg-gray-50 rounded-[40px] p-8 md:p-16 mb-12 flex items-center justify-center min-h-[400px]">
             <div className="w-full max-w-5xl">
               <LottiePlayer 
-                animationData={new2Animation} 
+                loadAnimation={() => import('../src/assets/lottie/691e040f1eb462228db0afb8_new2.json')} 
                 className="w-full h-auto"
                 loop={true}
               />

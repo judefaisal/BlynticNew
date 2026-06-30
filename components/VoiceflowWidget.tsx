@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 
 const VoiceflowWidget: React.FC = () => {
   useEffect(() => {
+    let checkShadowRoot: any = null;
+
     // Load the script only once
     if (!document.getElementById('voiceflow-script')) {
       const script = document.createElement('script');
@@ -16,22 +18,6 @@ const VoiceflowWidget: React.FC = () => {
               url: "https://runtime-api.voiceflow.com"
             }
           });
-
-          // Inject custom CSS to make the launcher icon 25% larger
-          const checkShadowRoot = setInterval(() => {
-            const vfc = document.querySelector('voiceflow-chat');
-            if (vfc && vfc.shadowRoot) {
-              const style = document.createElement('style');
-              style.innerHTML = `
-                .vfrc-launcher {
-                  transform: scale(1.25) !important;
-                  transform-origin: center !important;
-                }
-              `;
-              vfc.shadowRoot.appendChild(style);
-              clearInterval(checkShadowRoot);
-            }
-          }, 500);
         }
       };
       script.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs";
@@ -47,7 +33,32 @@ const VoiceflowWidget: React.FC = () => {
       }
     }
 
+    // Persistently check for the Voiceflow Shadow DOM and inject the 1.25x scaling style
+    checkShadowRoot = setInterval(() => {
+      const vfc = document.querySelector('voiceflow-chat');
+      if (vfc && vfc.shadowRoot) {
+        if (!vfc.shadowRoot.getElementById('voiceflow-custom-launcher-style')) {
+          const style = document.createElement('style');
+          style.id = 'voiceflow-custom-launcher-style';
+          style.innerHTML = `
+            .vfrc-launcher, [class*="launcher"] {
+              transform: scale(1.25) !important;
+              transform-origin: bottom right !important;
+              transition: transform 0.2s ease-in-out !important;
+            }
+            .vfrc-launcher:hover, [class*="launcher"]:hover {
+              transform: scale(1.35) !important;
+            }
+          `;
+          vfc.shadowRoot.appendChild(style);
+        }
+      }
+    }, 1000);
+
     return () => {
+      if (checkShadowRoot) {
+        clearInterval(checkShadowRoot);
+      }
       // Hide when component unmounts
       if ((window as any).voiceflow?.chat) {
         try {

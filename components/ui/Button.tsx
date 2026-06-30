@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import LottiePlayer from './LottiePlayer';
 import { ArrowRight } from 'lucide-react';
-import particleLottie from '../../src/assets/lottie/691e040f60a4c58fd2371e2c_button_particles_simulation.json';
 
 interface ButtonProps {
   children: React.ReactNode;
@@ -36,8 +35,12 @@ const Button: React.FC<ButtonProps> = ({ children, variant = 'black', href = '#'
       {/* Background Lottie on Hover */}
       <div className={`absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity duration-300 pointer-events-none`}>
          {/* Only render lottie if hovered to save resources, or keep hidden */}
-         {/* Using a static overlay for simplicity in this demo if lottie is heavy, but let's try rendering it */}
-         <LottiePlayer animationData={particleLottie} className="w-full h-full object-cover scale-150" />
+         {isHovered && (
+           <LottiePlayer 
+             loadAnimation={() => import('../../src/assets/lottie/691e040f60a4c58fd2371e2c_button_particles_simulation.json')} 
+             className="w-full h-full object-cover scale-150" 
+           />
+         )}
       </div>
 
       <span className="relative z-10 flex items-center gap-2 text-sm md:text-base font-semibold tracking-wide">

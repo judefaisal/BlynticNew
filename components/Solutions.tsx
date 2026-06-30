@@ -3,21 +3,17 @@ import { Reveal } from './ui/Reveal';
 import Button from './ui/Button';
 import LottiePlayer from './ui/LottiePlayer';
 
-import ballsAnimation from '../src/assets/lottie/691cc058a122b81b0b274cad_balls.json';
-import guysPictureAnimation from '../src/assets/lottie/691cc0589306a2b46891e4cb_guys_picture_1.json';
-import aiPoweredAnimation from '../src/assets/lottie/691cc05868bec08b14ffdfa9_ai_powred.json';
-
 const SolutionItem = ({ 
   title, 
   subtitle, 
   description, 
-  animationData, 
+  loadAnimation, 
   reverse = false 
 }: { 
   title: string; 
   subtitle: string; 
   description: string; 
-  animationData: any; 
+  loadAnimation: () => Promise<any>; 
   reverse?: boolean 
 }) => (
   <div className={`grid lg:grid-cols-2 gap-12 lg:gap-24 items-center mb-32 ${reverse ? 'lg:flex-row-reverse' : ''}`}>
@@ -38,7 +34,7 @@ const SolutionItem = ({
     
     <div className={`bg-gray-50 rounded-3xl p-8 md:p-12 ${reverse ? 'lg:order-1' : 'lg:order-2'}`}>
        <div className="relative aspect-square w-full">
-         <LottiePlayer animationData={animationData} className="w-full h-full" />
+         <LottiePlayer loadAnimation={loadAnimation} className="w-full h-full" />
        </div>
     </div>
   </div>
@@ -61,14 +57,14 @@ const Solutions: React.FC = () => {
           title="One Workflow,"
           subtitle="Multiple Automations"
           description="Your ultimate AI integration partner, managing everything from lead generation to data processing. Our custom AI agents adapt to your unique business logic and learn your specific operational preferences to scale with you"
-          animationData={ballsAnimation}
+          loadAnimation={() => import('../src/assets/lottie/691cc058a122b81b0b274cad_balls.json')}
         />
 
         <SolutionItem 
           title="AI-Powered Operations, Redefined"
           subtitle="End-to-End AI Workflow Automation"
           description="Revolutionize your business with autonomous lead sourcing, AI-driven data processing, and automated customer engagement. With seamless API integrations across CRMs, project management tools, and custom databases, our solutions expand your operational reach effortlessly."
-          animationData={guysPictureAnimation}
+          loadAnimation={() => import('../src/assets/lottie/691cc0589306a2b46891e4cb_guys_picture_1.json')}
           reverse={true}
         />
 
@@ -76,7 +72,7 @@ const Solutions: React.FC = () => {
           title="Intelligent Monitoring"
           subtitle="& AI-Led Interaction"
           description="Our proprietary LLM frameworks go beyond basic automation—they analyze, assess, and adapt to complex workflows. From automated sentiment analysis and multilingual support to high-fidelity voice AI agents and facial recognition security, we build the front-line of your digital workforce"
-          animationData={aiPoweredAnimation}
+          loadAnimation={() => import('../src/assets/lottie/691cc05868bec08b14ffdfa9_ai_powred.json')}
         />
 
       </div>
