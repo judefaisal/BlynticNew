@@ -16,6 +16,7 @@ import SmartWebsite from './components/SmartWebsite';
 import FullAISolution from './components/FullAISolution';
 import AIMarketing from './components/AIMarketing';
 import Contact from './components/ui/travel-connect-signin-1';
+import FAQPage from './components/FAQPage';
 import Footer from './components/Footer';
 import VoiceflowWidget from './components/VoiceflowWidget';
 
@@ -31,7 +32,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (currentHash === '#/talk-to-sales' || currentHash === '#/ai-customer-service' || currentHash === '#/ai-chatbots' || currentHash === '#/smart-website' || currentHash === '#/full-ai-solution' || currentHash === '#/ai-marketing' || currentHash === '#/contact') {
+    if (currentHash === '#/talk-to-sales' || currentHash === '#/ai-customer-service' || currentHash === '#/ai-chatbots' || currentHash === '#/smart-website' || currentHash === '#/full-ai-solution' || currentHash === '#/ai-marketing' || currentHash === '#/contact' || currentHash === '#/faq') {
       window.scrollTo(0, 0);
     }
   }, [currentHash]);
@@ -45,10 +46,11 @@ function App() {
   const isFullAISolutionPage = currentHash === '#/full-ai-solution';
   const isAIMarketingPage = currentHash === '#/ai-marketing';
   const isContactPage = currentHash === '#/contact';
+  const isFAQPage = currentHash === '#/faq';
 
   return (
     <main className="font-sans text-brand-black bg-white selection:bg-blue-200 selection:text-black">
-      <Navbar isTalkToSalesPage={isTalkToSalesPage || isAICustomerServicePage || isAIChatbotsPage || isSmartWebsitePage || isFullAISolutionPage || isAIMarketingPage || isContactPage} />
+      <Navbar isTalkToSalesPage={isTalkToSalesPage || isAICustomerServicePage || isAIChatbotsPage || isSmartWebsitePage || isFullAISolutionPage || isAIMarketingPage || isContactPage || isFAQPage} />
       
       {isTalkToSalesPage ? (
         <TalkToSales />
@@ -64,6 +66,8 @@ function App() {
         <AIMarketing />
       ) : isContactPage ? (
         <Contact />
+      ) : isFAQPage ? (
+        <FAQPage />
       ) : isBlogPage ? (
         <Blog />
       ) : isBlogDetailPage ? (
