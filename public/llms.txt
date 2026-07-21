@@ -1,0 +1,28 @@
+# Blyntic
+
+> Blyntic is an AI automation agency based in Auckland, New Zealand. We build AI voice agents, conversational chatbots, and workflow automations for small and medium businesses across New Zealand. Our motto: Less Work, More Growth.
+
+## What we do
+
+- AI Voice Agents: 24/7 inbound call answering, appointment booking, lead qualification and outbound follow-up calls, built on Retell AI and Vapi.
+- Conversational AI Agents: Website and messaging chatbots built on Voiceflow that answer FAQs, capture leads and book appointments.
+- Workflow Automation: Business process automation using n8n and Make.com — CRM updates, invoicing, email follow-ups, reporting, and system integrations.
+- Custom Integrations: Connecting your existing tools (CRM, calendar, accounting, email) so data flows automatically without manual entry.
+
+## Who we serve
+
+New Zealand small and medium businesses that miss calls, drown in admin, or lose leads to slow follow-up — including trades, clinics, real estate, professional services and e-commerce.
+
+## Key pages
+
+- Home: https://www.blyntic.co.nz/
+- Services: https://www.blyntic.co.nz/#/solutions
+- FAQ: https://www.blyntic.co.nz/#/faq
+- Contact: https://www.blyntic.co.nz/#/contact
+
+## Contact
+
+Website: https://www.blyntic.co.nz
+Location: Auckland, New Zealand
+Email: jude@blyntic.co.nz
+Phone: (+64) 223 037 330
