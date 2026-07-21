@@ -1,6 +1,8 @@
 {
-  "name": "",
-  "description": "",
+  "name": "Blyntic - AI Automation Agency",
+  "description": "Blyntic is a leading AI automation agency in New Zealand, designing, building, and maintaining AI voice agents, chatbots, and custom workflow automations to streamline business operations.",
   "requestFramePermissions": [],
-  "majorCapabilities": []
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

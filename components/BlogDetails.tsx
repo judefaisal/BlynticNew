@@ -7,6 +7,7 @@ import { Reveal } from './ui/Reveal';
 import { db, handleFirestoreError, OperationType } from '../src/firebase';
 import { collection, getDocs, query } from 'firebase/firestore';
 import { staticBlogs } from '../src/blogData';
+import { StructuredData } from './StructuredData';
 
 interface BlogPost {
   id: string;
@@ -95,7 +96,10 @@ const BlogDetails: React.FC<BlogDetailsProps> = ({ slug: propSlug }) => {
   }
 
   return (
-    <div className="min-h-screen bg-white pt-32 pb-24">
+    <article className="min-h-screen bg-white pt-32 pb-24">
+      {/* Dynamic JSON-LD Structured Data for this specific Blog Post */}
+      <StructuredData pageType="blogPost" blogPostData={blog} />
+
       <div className="container mx-auto px-4 md:px-6">
         <div className="max-w-4xl mx-auto">
           <Reveal>
@@ -135,7 +139,16 @@ const BlogDetails: React.FC<BlogDetailsProps> = ({ slug: propSlug }) => {
 
           <Reveal delay={0.3}>
             <div className="relative aspect-video w-full rounded-[40px] overflow-hidden shadow-2xl mb-16">
-              <img src={blog.imageUrl} alt={blog.title} className="w-full h-full object-cover" />
+              <img 
+                src={blog.imageUrl.includes('unsplash.com') ? `https://picsum.photos/seed/${blog.id}/1200/800` : blog.imageUrl} 
+                alt={blog.title} 
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = `https://picsum.photos/seed/${blog.id}-fallback/1200/800`;
+                }}
+                className="w-full h-full object-cover" 
+              />
             </div>
           </Reveal>
 
@@ -166,7 +179,7 @@ const BlogDetails: React.FC<BlogDetailsProps> = ({ slug: propSlug }) => {
           </Reveal>
         </div>
       </div>
-    </div>
+    </article>
   );
 };
 

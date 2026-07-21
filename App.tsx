@@ -19,6 +19,7 @@ import Contact from './components/ui/travel-connect-signin-1';
 import FAQPage from './components/FAQPage';
 import Footer from './components/Footer';
 import VoiceflowWidget from './components/VoiceflowWidget';
+import { StructuredData } from './components/StructuredData';
 
 function App() {
   const [currentHash, setCurrentHash] = useState(window.location.hash);
@@ -53,19 +54,80 @@ function App() {
       <Navbar isTalkToSalesPage={isTalkToSalesPage || isAICustomerServicePage || isAIChatbotsPage || isSmartWebsitePage || isFullAISolutionPage || isAIMarketingPage || isContactPage || isFAQPage} />
       
       {isTalkToSalesPage ? (
-        <TalkToSales />
+        <>
+          <StructuredData pageType="contact" />
+          <TalkToSales />
+        </>
       ) : isAICustomerServicePage ? (
-        <AICustomerService />
+        <>
+          <StructuredData 
+            pageType="service" 
+            serviceData={{
+              name: 'AI Customer Support & Service Automation',
+              description: 'Deploy autonomous AI agents that handle phone calls, text chat, and email tickets 24/7. Fully integrated with your helpdesk, CRM and scheduling databases.',
+              category: 'AI Support Automation',
+              url: '#/ai-customer-service'
+            }} 
+          />
+          <AICustomerService />
+        </>
       ) : isAIChatbotsPage ? (
-        <AIChatbots />
+        <>
+          <StructuredData 
+            pageType="service" 
+            serviceData={{
+              name: 'Conversational AI Chatbots Integration',
+              description: 'Deploy bespoke, brand-tuned 24/7 AI-powered conversational chatbots to capture, engage, and qualify leads on your website automatically.',
+              category: 'Conversational AI',
+              url: '#/ai-chatbots'
+            }} 
+          />
+          <AIChatbots />
+        </>
       ) : isSmartWebsitePage ? (
-        <SmartWebsite />
+        <>
+          <StructuredData 
+            pageType="service" 
+            serviceData={{
+              name: 'Smart Website AI Integration',
+              description: 'Connect modern large language model interfaces, search capabilities, and responsive interactive widget tools seamlessly into your existing corporate web pages.',
+              category: 'AI Web Integration',
+              url: '#/smart-website'
+            }} 
+          />
+          <SmartWebsite />
+        </>
       ) : isFullAISolutionPage ? (
-        <FullAISolution />
+        <>
+          <StructuredData 
+            pageType="service" 
+            serviceData={{
+              name: 'Full Custom AI Solutions & CRM Workflows',
+              description: 'End-to-end proprietary enterprise-level AI automation pipelines, customized n8n/Make systems, and custom database integrations tailored strictly to your operations.',
+              category: 'Enterprise AI Automation',
+              url: '#/full-ai-solution'
+            }} 
+          />
+          <FullAISolution />
+        </>
       ) : isAIMarketingPage ? (
-        <AIMarketing />
+        <>
+          <StructuredData 
+            pageType="service" 
+            serviceData={{
+              name: 'AI Marketing & Automated Campaigns',
+              description: 'Leverage generative AI content production platforms, automated newsletter systems, tracking metrics, and dynamic analytics to accelerate your New Zealand client base.',
+              category: 'AI Marketing & Growth',
+              url: '#/ai-marketing'
+            }} 
+          />
+          <AIMarketing />
+        </>
       ) : isContactPage ? (
-        <Contact />
+        <>
+          <StructuredData pageType="contact" />
+          <Contact />
+        </>
       ) : isFAQPage ? (
         <FAQPage />
       ) : isBlogPage ? (
@@ -74,6 +136,7 @@ function App() {
         <BlogDetails />
       ) : (
         <>
+          <StructuredData pageType="home" />
           <Hero />
           <LogoTicker />
           <Solutions />

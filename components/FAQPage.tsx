@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { HelpCircle, ChevronDown, Landmark, Sparkles, Clock, ShieldCheck, Zap, Key, Link2, DollarSign } from 'lucide-react';
 import { Reveal } from './ui/Reveal';
 import Button from './ui/Button';
+import { StructuredData } from './StructuredData';
 
 interface FAQItem {
   id: string;
@@ -103,26 +104,12 @@ const FAQPage: React.FC = () => {
     }
   ];
 
-  // Schema generation for Google FAQPage search engines (GEO/AEO optimized)
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": faqData.map((faq) => ({
-      "@type": "Question",
-      "name": faq.question,
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": faq.answerFull
-      }
-    }))
-  };
-
   return (
     <div className="min-h-screen bg-slate-50 pt-32 pb-24 text-gray-900">
-      {/* Inject JSON-LD Structured Data Schema */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      {/* Inject Unified JSON-LD Structured Data Schema */}
+      <StructuredData 
+        pageType="faq" 
+        faqDataList={faqData.map(faq => ({ question: faq.question, answer: faq.answerFull }))} 
       />
 
       <div className="container mx-auto px-4 md:px-6">

@@ -10,6 +10,7 @@ import { auth, db, handleFirestoreError, OperationType } from '../src/firebase';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, Timestamp, orderBy, query } from 'firebase/firestore';
 import LoginModal from './LoginModal';
 import { staticBlogs } from '../src/blogData';
+import { StructuredData } from './StructuredData';
 
 interface DraftBlog {
   title: string;
@@ -192,6 +193,9 @@ const Blog: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white pt-32 pb-24">
+      {/* Dynamic JSON-LD Structured Data for Blog List Page */}
+      <StructuredData pageType="blogIndex" />
+
       <div className="container mx-auto px-4 md:px-6">
         
         {/* Header */}
@@ -356,7 +360,7 @@ const Blog: React.FC = () => {
                   </div>
                 ) : (
                   filteredBlogs.map((blog) => (
-                    <motion.div 
+                    <motion.article 
                       key={blog.id}
                       layout
                       initial={{ opacity: 0, scale: 0.95 }}
@@ -365,28 +369,32 @@ const Blog: React.FC = () => {
                     >
                       <div className="relative aspect-[16/10] overflow-hidden">
                         <img 
-                          src={blog.imageUrl} 
+                          src={blog.imageUrl.includes('unsplash.com') ? `https://picsum.photos/seed/${blog.id}/800/500` : blog.imageUrl} 
                           alt={blog.title} 
                           referrerPolicy="no-referrer"
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = `https://picsum.photos/seed/${blog.id}-fallback/800/500`;
+                          }}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                         />
                         <div className="absolute top-4 right-4 flex gap-2 z-10">
                           {isLoggedIn && (
-                            <>
-                              <button 
-                                onClick={() => handleEdit(blog)}
-                                className="p-2 bg-white/90 backdrop-blur-sm rounded-full text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-sm"
-                              >
-                                <Edit3 className="w-4 h-4" />
-                              </button>
-                              <button 
-                                onClick={() => handleDelete(blog.id)}
-                                className="p-2 bg-white/90 backdrop-blur-sm rounded-full text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-sm"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            </>
+                            <button 
+                              onClick={() => handleEdit(blog)}
+                              className="p-2 bg-white/90 backdrop-blur-sm rounded-full text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-sm"
+                              title="Edit Article"
+                            >
+                              <Edit3 className="w-4 h-4" />
+                            </button>
                           )}
+                          <button 
+                            onClick={() => handleDelete(blog.id)}
+                            className="p-2 bg-white/90 backdrop-blur-sm rounded-full text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-sm"
+                            title="Delete Article"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </div>
                       </div>
                       
@@ -418,7 +426,7 @@ const Blog: React.FC = () => {
                           </a>
                         </div>
                       </div>
-                    </motion.div>
+                    </motion.article>
                   ))
                 )}
               </motion.div>
