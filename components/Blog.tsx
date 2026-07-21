@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LogIn, Plus, Save, Trash2, Loader2, ArrowLeft, BookOpen, Edit3, ChevronDown, ChevronUp } from 'lucide-react';
+import { LogIn, Plus, Save, Trash2, Loader2, ArrowLeft, BookOpen, Edit3, ChevronDown, ChevronUp, Search } from 'lucide-react';
 import Markdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
 import { Reveal } from './ui/Reveal';
 import Button from './ui/Button';
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth, db } from '../src/firebase';
+import { auth, db, handleFirestoreError, OperationType } from '../src/firebase';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, Timestamp, orderBy, query } from 'firebase/firestore';
 import LoginModal from './LoginModal';
+import { staticBlogs } from '../src/blogData';
 
 interface DraftBlog {
   title: string;
@@ -20,12 +21,14 @@ interface BlogPost extends DraftBlog {
   id: string;
   date: string;
   createdAt?: any;
+  category?: string;
+  readTime?: string;
 }
 
 const Blog: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   
-  const [blogs, setBlogs] = useState<BlogPost[]>([]);
+  const [blogs, setBlogs] = useState<BlogPost[]>(staticBlogs);
   const [isCreating, setIsCreating] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -34,6 +37,17 @@ const Blog: React.FC = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isLoadingBlogs, setIsLoadingBlogs] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+
+  const categories = ['All', 'AI Basics', 'Tech Explained', 'Business Insights', 'Prompt Engineering', 'Career & Trust'];
+
+  const filteredBlogs = blogs.filter(blog => {
+    const matchesSearch = blog.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          blog.content.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === 'All' || (blog.category || 'AI Insights') === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   const faqs = [
     {
@@ -64,14 +78,15 @@ const Blog: React.FC = () => {
         querySnapshot.forEach((doc) => {
           fetchedBlogs.push({ id: doc.id, ...doc.data() } as BlogPost);
         });
-        setBlogs(fetchedBlogs);
+        
+        // Remove any static blog duplicates if they were manually saved to Firebase
+        const fetchedIds = new Set(fetchedBlogs.map(b => b.id));
+        const nonDuplicateStatic = staticBlogs.filter(b => !fetchedIds.has(b.id));
+        setBlogs([...fetchedBlogs, ...nonDuplicateStatic]);
       } catch (error: any) {
-        console.error("Error fetching blogs:", error);
-        if (error.code === 'permission-denied') {
-          alert('Error: Missing or insufficient permissions. Please update your Firestore security rules in the Firebase Console to allow read/write access to the "blogs" collection.');
-        } else {
-          alert(`Error fetching blogs: ${error.message}`);
-        }
+        console.error("Error fetching blogs from Firebase:", error);
+        // Fall back gracefully to static blogs since they are pre-initialized
+        handleFirestoreError(error, OperationType.LIST, 'blogs');
       } finally {
         setIsLoadingBlogs(false);
       }
@@ -156,9 +171,10 @@ const Blog: React.FC = () => {
       
       setIsCreating(false);
       setCurrentDraft(null);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error saving blog:", error);
       alert("Failed to save blog to Firebase.");
+      handleFirestoreError(error, isEditing ? OperationType.UPDATE : OperationType.CREATE, isEditing && editingId ? `blogs/${editingId}` : 'blogs');
     } finally {
       setIsSaving(false);
     }
@@ -168,8 +184,9 @@ const Blog: React.FC = () => {
     try {
       await deleteDoc(doc(db, "blogs", id));
       setBlogs(blogs.filter(b => b.id !== id));
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error deleting blog:", error);
+      handleFirestoreError(error, OperationType.DELETE, `blogs/${id}`);
     }
   };
 
@@ -293,65 +310,119 @@ const Blog: React.FC = () => {
               )}
             </motion.div>
           ) : (
-            <motion.div 
-              key="list"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-            >
-              {isLoadingBlogs ? (
-                <div className="col-span-full py-20 flex justify-center">
-                  <Loader2 className="w-12 h-12 animate-spin text-blue-600" />
+            <div className="space-y-12">
+              {/* Search and Categories Bar */}
+              <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-6 bg-slate-50 p-6 rounded-3xl border border-slate-100 shadow-sm">
+                <div className="relative flex-1">
+                  <span className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-slate-400">
+                    <Search className="w-5 h-5" />
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="Search AI, Prompt Engineering, LLMs, Agents & Career guides..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-12 pr-4 py-3 bg-white rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium text-sm text-slate-800 shadow-sm transition-all"
+                  />
                 </div>
-              ) : blogs.length === 0 ? (
-                <div className="col-span-full py-20 text-center bg-gray-50 rounded-[32px] border border-dashed border-gray-300">
-                  <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-500">No blogs yet. Start by creating one!</p>
+                
+                <div className="flex flex-wrap gap-2 items-center">
+                  {categories.map((category) => (
+                    <button
+                      key={category}
+                      onClick={() => setSelectedCategory(category)}
+                      className={`px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all border ${
+                        selectedCategory === category
+                          ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-100'
+                          : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                      }`}
+                    >
+                      {category}
+                    </button>
+                  ))}
                 </div>
-              ) : (
-                blogs.map((blog) => (
-                  <motion.div 
-                    key={blog.id}
-                    layout
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="group bg-white rounded-[24px] border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300"
-                  >
-                    <div className="relative aspect-[4/3] overflow-hidden">
-                      <img src={blog.imageUrl} alt={blog.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                      <div className="absolute top-4 right-4 flex gap-2">
-                        {isLoggedIn && (
-                          <>
-                            <button 
-                              onClick={() => handleEdit(blog)}
-                              className="p-2 bg-white/90 backdrop-blur-sm rounded-full text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-sm"
-                            >
-                              <Edit3 className="w-4 h-4" />
-                            </button>
-                            <button 
-                              onClick={() => handleDelete(blog.id)}
-                              className="p-2 bg-white/90 backdrop-blur-sm rounded-full text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-sm"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          </>
-                        )}
+              </div>
+
+              <motion.div 
+                key="list"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+              >
+                {filteredBlogs.length === 0 ? (
+                  <div className="col-span-full py-20 text-center bg-gray-50 rounded-[32px] border border-dashed border-gray-300">
+                    <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                    <p className="text-gray-500">No guides or articles found matching your criteria. Try adjusting your search query!</p>
+                  </div>
+                ) : (
+                  filteredBlogs.map((blog) => (
+                    <motion.div 
+                      key={blog.id}
+                      layout
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="group bg-white rounded-[24px] border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full"
+                    >
+                      <div className="relative aspect-[16/10] overflow-hidden">
+                        <img 
+                          src={blog.imageUrl} 
+                          alt={blog.title} 
+                          referrerPolicy="no-referrer"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                        />
+                        <div className="absolute top-4 right-4 flex gap-2 z-10">
+                          {isLoggedIn && (
+                            <>
+                              <button 
+                                onClick={() => handleEdit(blog)}
+                                className="p-2 bg-white/90 backdrop-blur-sm rounded-full text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-sm"
+                              >
+                                <Edit3 className="w-4 h-4" />
+                              </button>
+                              <button 
+                                onClick={() => handleDelete(blog.id)}
+                                className="p-2 bg-white/90 backdrop-blur-sm rounded-full text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-sm"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    <div className="p-6">
-                      <p className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">{blog.date}</p>
-                      <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">{blog.title}</h3>
-                      <div className="text-gray-500 text-sm line-clamp-3 mb-4">
-                        {blog.content.substring(0, 150) + '...'}
+                      
+                      <div className="p-6 flex flex-col flex-1">
+                        <div className="flex items-center justify-between gap-4 mb-3">
+                          <span className="text-[10px] font-extrabold text-blue-600 bg-blue-50 border border-blue-100/50 px-2.5 py-1 rounded-md uppercase tracking-wider">
+                            {blog.category || 'AI Insights'}
+                          </span>
+                          <span className="text-xs text-slate-400 font-semibold">
+                            {blog.readTime || '4 min read'}
+                          </span>
+                        </div>
+                        
+                        <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-3 line-clamp-2 leading-snug group-hover:text-blue-600 transition-colors">
+                          {blog.title}
+                        </h3>
+                        
+                        <p className="text-gray-500 text-sm line-clamp-3 mb-6 leading-relaxed flex-1">
+                          {blog.content.replace(/[#*`\-]/g, '').substring(0, 140).trim() + '...'}
+                        </p>
+                        
+                        <div className="flex items-center justify-between pt-4 border-t border-slate-100 mt-auto">
+                          <span className="text-xs text-slate-400 font-semibold">{blog.date}</span>
+                          <a 
+                            href={`#/blog/${blog.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`} 
+                            className="text-blue-600 font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all"
+                          >
+                            Read Article <Plus className="w-4 h-4" />
+                          </a>
+                        </div>
                       </div>
-                      <a href={`#/blog/${blog.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`} className="text-black font-bold text-sm flex items-center gap-1 hover:gap-2 transition-all">
-                        Read more <Plus className="w-4 h-4" />
-                      </a>
-                    </div>
-                  </motion.div>
-                ))
-              )}
-            </motion.div>
+                    </motion.div>
+                  ))
+                )}
+              </motion.div>
+            </div>
           )}
         </AnimatePresence>
 

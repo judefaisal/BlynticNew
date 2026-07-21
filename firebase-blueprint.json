@@ -1,0 +1,52 @@
+{
+  "entities": {
+    "BlogPost": {
+      "title": "BlogPost",
+      "description": "A blog post or article",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "The title of the blog post"
+        },
+        "content": {
+          "type": "string",
+          "maxLength": 50000,
+          "description": "The markdown content of the blog post"
+        },
+        "imageUrl": {
+          "type": "string",
+          "maxLength": 2048,
+          "description": "The URL of the blog post's header image"
+        },
+        "date": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "The display date of the blog post"
+        },
+        "createdAt": {
+          "type": "object",
+          "description": "Firestore server timestamp of creation"
+        },
+        "category": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "The category of the blog post"
+        },
+        "readTime": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Estimated read time of the blog post"
+        }
+      },
+      "required": ["title", "content", "imageUrl", "date"]
+    }
+  },
+  "firestore": {
+    "blogs/{blogId}": {
+      "schema": "BlogPost",
+      "description": "Collection of blog posts"
+    }
+  }
+}

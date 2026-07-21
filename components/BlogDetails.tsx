@@ -4,8 +4,9 @@ import { ArrowLeft, Calendar, Clock, Share2 } from 'lucide-react';
 import Markdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
 import { Reveal } from './ui/Reveal';
-import { db } from '../src/firebase';
+import { db, handleFirestoreError, OperationType } from '../src/firebase';
 import { collection, getDocs, query } from 'firebase/firestore';
+import { staticBlogs } from '../src/blogData';
 
 interface BlogPost {
   id: string;
@@ -13,6 +14,8 @@ interface BlogPost {
   content: string;
   imageUrl: string;
   date: string;
+  category?: string;
+  readTime?: string;
 }
 
 interface BlogDetailsProps {
@@ -28,6 +31,19 @@ const BlogDetails: React.FC<BlogDetailsProps> = ({ slug: propSlug }) => {
       const slug = propSlug || window.location.hash.split('/').pop();
       if (!slug) {
         setLoading(false);
+        return;
+      }
+
+      // Check static blogs first for instant response
+      const staticMatch = staticBlogs.find(b => {
+        const currentSlug = b.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        return currentSlug === slug;
+      });
+
+      if (staticMatch) {
+        setBlog(staticMatch);
+        setLoading(false);
+        window.scrollTo(0, 0);
         return;
       }
 
@@ -47,11 +63,7 @@ const BlogDetails: React.FC<BlogDetailsProps> = ({ slug: propSlug }) => {
         setBlog(foundBlog);
       } catch (error: any) {
         console.error("Error fetching blog:", error);
-        if (error.code === 'permission-denied') {
-          alert('Error: Missing or insufficient permissions. Please update your Firestore security rules to allow read access.');
-        } else {
-          alert(`Error fetching blog: ${error.message}`);
-        }
+        handleFirestoreError(error, OperationType.GET, 'blogs');
       } finally {
         setLoading(false);
         window.scrollTo(0, 0);
@@ -94,7 +106,15 @@ const BlogDetails: React.FC<BlogDetailsProps> = ({ slug: propSlug }) => {
           </Reveal>
 
           <Reveal delay={0.1}>
-            <div className="flex items-center gap-4 mb-6 text-sm font-bold text-blue-600 uppercase tracking-widest">
+            <div className="flex flex-wrap items-center gap-4 mb-6 text-sm font-bold text-blue-600 uppercase tracking-widest">
+              {blog.category && (
+                <>
+                  <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-md text-[10px] font-extrabold tracking-wider border border-blue-100/50">
+                    {blog.category}
+                  </span>
+                  <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                </>
+              )}
               <span className="flex items-center gap-1.5">
                 <Calendar className="w-4 h-4" />
                 {blog.date}
@@ -102,7 +122,7 @@ const BlogDetails: React.FC<BlogDetailsProps> = ({ slug: propSlug }) => {
               <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
               <span className="flex items-center gap-1.5">
                 <Clock className="w-4 h-4" />
-                5 min read
+                {blog.readTime || '5 min read'}
               </span>
             </div>
           </Reveal>

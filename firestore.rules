@@ -1,0 +1,54 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Safety Net (default-deny catch-all)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Hardened Global Helpers ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // --- Entity Validation Helpers ---
+    function isValidBlogPost(data) {
+      return data.title is string && data.title.size() <= 500 &&
+             data.content is string && data.content.size() <= 50000 &&
+             data.imageUrl is string && data.imageUrl.size() <= 2048 &&
+             data.date is string && data.date.size() <= 100 &&
+             (!('category' in data) || (data.category is string && data.category.size() <= 100)) &&
+             (!('readTime' in data) || (data.readTime is string && data.readTime.size() <= 100));
+    }
+
+    // --- Path Rules ---
+    match /blogs/{blogId} {
+      // Allow public read access to articles
+      allow read: if true;
+
+      // Allow authenticated and verified users to write/modify blog posts
+      allow create: if isSignedIn() && 
+                    (request.auth.token.email_verified == true || request.auth.token.firebase.sign_in_provider == 'google.com') && 
+                    isValidBlogPost(incoming());
+                    
+      allow update: if isSignedIn() && 
+                    (request.auth.token.email_verified == true || request.auth.token.firebase.sign_in_provider == 'google.com') && 
+                    isValidBlogPost(incoming());
+                    
+      allow delete: if isSignedIn() && 
+                    (request.auth.token.email_verified == true || request.auth.token.firebase.sign_in_provider == 'google.com');
+    }
+  }
+}
