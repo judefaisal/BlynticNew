@@ -8,7 +8,6 @@ import Stats from './components/Stats';
 import WhyChoose from './components/WhyChoose';
 import HowItWorks from './components/HowItWorks';
 import Footer from './components/Footer';
-import VoiceflowWidget from './components/VoiceflowWidget';
 import { StructuredData } from './components/StructuredData';
 
 // Lazy load heavy page routes for optimal speed and SEO/AEO indexability
@@ -156,7 +155,6 @@ function App() {
             <Stats />
             <HowItWorks />
             <WhyChoose />
-            <VoiceflowWidget />
           </>
         )}
       </Suspense>

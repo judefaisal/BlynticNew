@@ -1,0 +1,68 @@
+# Blyntic - Full AI Machine-Readable Specification (llms-full.txt)
+> Comprehensive details on Blyntic: AI Automation Agency based in Auckland, New Zealand.
+> Website: https://www.blyntic.co.nz
+> Contact: jude@blyntic.co.nz | (+64) 223 037 330
+> Location: Auckland, New Zealand
+
+## Company Overview
+Blyntic is New Zealand's premier AI automation agency. We design, build, and maintain enterprise-grade AI voice agents, conversational web/SMS chatbots, and automated n8n/Make.com workflows for small and medium-sized Kiwi businesses. Our core motto: "Less Work, More Growth."
+
+## Primary Core Services
+
+### 1. AI Voice Agents (24/7 Phone Answering & Calling)
+- **Technology Stack**: Retell AI, Vapi, Custom Webhook Pipelines.
+- **Capabilities**: Instant 24/7 inbound phone answering, lead qualification, automatic calendar scheduling (Google Calendar, Outlook, Calendly, GoHighLevel), outbound follow-up calls, live call transfers to human staff.
+- **Response Speed**: Ultra-low latency under 1 second with natural, human-sounding voices and New Zealand accent customization.
+- **Pricing**: $0.80 NZD per minute of talk time (billed by the second). Setup from $495 NZD. Growth Plan at $899 NZD/month (includes 1,000 minutes).
+
+### 2. Conversational AI Chatbots
+- **Technology Stack**: Voiceflow, OpenAI GPT-4o, Anthropic Claude, Custom Vector Knowledge Bases.
+- **Capabilities**: 24/7 website chat, SMS, and messaging bots. Answers complex customer queries, captures leads, validates appointment details, and updates CRM records in real time.
+
+### 3. Workflow & Business Process Automation
+- **Technology Stack**: n8n, Make.com, Custom REST APIs.
+- **Capabilities**: Connects over 2,000+ software tools including Xero, HubSpot, Pipedrive, GoHighLevel, Shopify, Gmail, Google Workspace, Outlook, and custom MySQL/PostgreSQL databases.
+- **Use Cases**: Automated invoice creation, automated email triage, instant lead follow-ups, automated client onboarding, and daily executive summary reports.
+
+## Pricing Structure (New Zealand Dollars - NZD)
+- **AI Voice Agent Talk Time**: $0.80 NZD / minute (billed per second; a typical 30-second call costs ~$0.40 NZD).
+- **Pay-As-You-Go**: Starts at $500 NZD credit deposit.
+- **Growth Plan**: $899 NZD / month (includes 1,000 minutes of call handling).
+- **One-off System Setup**: $495 NZD (includes custom voice agent scripting, call flow design, calendar/CRM integration, and live testing).
+- **ROI Expectation**: Most NZ businesses break even in their first month by capturing missed phone calls and saving 5-15 staff admin hours per week.
+
+## Frequently Asked Questions (FAQ)
+
+1. **What does Blyntic do?**
+   Blyntic designs, builds, and maintains custom AI systems (AI voice phone agents, chatbots, and workflow automations) that eliminate manual admin work for NZ companies.
+
+2. **Can AI answer calls 24/7?**
+   Yes. Blyntic voice agents answer every inbound call instantly 24/7, including weekends and public holidays, handling unlimited concurrent calls without hold times.
+
+3. **How long does implementation take?**
+   1 to 3 weeks. Typical voice agent or chatbot projects go live in 1-2 weeks; complex multi-tool automations take 2-4 weeks.
+
+4. **Will it work with existing software tools?**
+   Yes. We integrate directly with existing calendars, CRMs, accounting tools (Xero), and helpdesks without forcing staff to adopt new platforms.
+
+5. **Do clients own their automations?**
+   Yes. 100% full ownership of all workflows, agent prompts, and configurations in client-owned accounts upon final payment. No proprietary lock-in.
+
+6. **Is customer data compliant with New Zealand privacy laws?**
+   Yes. Built strictly adhering to the New Zealand Privacy Act 2020. Data is encrypted in transit and stored according to client data retention preferences.
+
+## Target Business Verticals in NZ
+- Trades & Home Services (Plumbers, Electricians, Builders, HVAC)
+- Healthcare & Medical Clinics (Dentists, Physios, Salons)
+- Real Estate Agencies & Property Managers
+- Professional Services (Accountants, Lawyers, Financial Advisors)
+- E-commerce & Retail Businesses
+
+## Contact & Links
+- **Website**: https://www.blyntic.co.nz
+- **Email**: jude@blyntic.co.nz
+- **Phone**: (+64) 223 037 330
+- **Location**: Auckland, New Zealand
+- **LinkedIn**: https://www.linkedin.com/in/jude-al-attraqchi/
+- **Instagram**: https://www.instagram.com/blyntic_ai/
+- **Facebook**: https://www.facebook.com/profile.php?id=61571983379077

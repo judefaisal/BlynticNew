@@ -1,9 +1,18 @@
-# Blyntic robots.txt — allow search + AI answer engines
+# Blyntic robots.txt — Google AI Optimization & Search Crawler Access
+# Compliant with Google AI Optimization Guide (https://developers.google.com/search/docs/fundamentals/ai-optimization-guide)
 
 User-agent: *
 Allow: /
 
-# OpenAI (ChatGPT)
+# Google Search & Google AI Overviews
+User-agent: Googlebot
+Allow: /
+User-agent: GoogleOther
+Allow: /
+User-agent: Google-Extended
+Allow: /
+
+# OpenAI (ChatGPT / SearchGPT)
 User-agent: GPTBot
 Allow: /
 User-agent: OAI-SearchBot
@@ -19,17 +28,13 @@ Allow: /
 User-agent: Claude-SearchBot
 Allow: /
 
-# Google (Gemini / AI Overviews)
-User-agent: Google-Extended
-Allow: /
-
-# Perplexity
+# Perplexity AI
 User-agent: PerplexityBot
 Allow: /
 User-agent: Perplexity-User
 Allow: /
 
-# Others
+# Other Major AI & Search Crawlers
 User-agent: Applebot-Extended
 Allow: /
 User-agent: Bingbot
@@ -40,3 +45,4 @@ User-agent: Meta-ExternalAgent
 Allow: /
 
 Sitemap: https://www.blyntic.co.nz/sitemap.xml
+

@@ -5,9 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="https://cdn.prod.website-files.com/69059456676850507afd94d2/690795a7d8a87712ab44e663_Logo%20Icon.svg" />
     
-    <!-- Primary meta — answer-engine friendly title & description -->
+    <!-- Primary meta — answer-engine & Google AI Overview friendly title & description -->
     <title>Blyntic | AI Automation Agency NZ — Voice Agents, Chatbots & Workflow Automation</title>
     <meta name="description" content="Blyntic is an Auckland-based AI automation agency helping NZ businesses answer every call 24/7, automate admin, and follow up leads instantly with AI voice agents, chatbots and workflow automation. Less work, more growth." />
+
+    <!-- Google AI Search & Search Engine Crawling Directives (Google AI Optimization Guide) -->
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <meta name="googlebot-news" content="index, follow" />
+    <meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
 
     <link rel="canonical" href="https://www.blyntic.co.nz/" />
 
@@ -30,7 +36,7 @@
     <link rel="preconnect" href="https://images.unsplash.com" />
     <link rel="preconnect" href="https://picsum.photos" />
 
-    <!-- Organization + LocalBusiness schema: tells Google/ChatGPT/Claude/Gemini WHO you are -->
+    <!-- Organization, ProfessionalService, Speakable & Breadcrumb schema for Google AI Search -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -39,13 +45,15 @@
           "@type": ["Organization", "ProfessionalService"],
           "@id": "https://www.blyntic.co.nz/#organization",
           "name": "Blyntic",
-          "alternateName": "Blyntic AI",
+          "alternateName": "Blyntic AI Agency",
           "url": "https://www.blyntic.co.nz",
           "logo": "https://cdn.prod.website-files.com/69059456676850507afd94d2/690795a7d8a87712ab44e663_Logo%20Icon.svg",
+          "image": "https://cdn.prod.website-files.com/69059456676850507afd94d2/690795a7d8a87712ab44e663_Logo%20Icon.svg",
           "slogan": "Less Work, More Growth",
           "description": "Blyntic is an AI automation agency in Auckland, New Zealand. We build AI voice agents, conversational chatbots and workflow automations that answer calls 24/7, book appointments, follow up leads and eliminate repetitive admin for NZ small and medium businesses.",
           "email": "jude@blyntic.co.nz",
           "telephone": "(+64) 223 037 330",
+          "priceRange": "$$",
           "foundingDate": "2026",
           "founder": {
             "@type": "Person",
@@ -56,6 +64,11 @@
             "addressLocality": "Auckland",
             "addressRegion": "Auckland",
             "addressCountry": "NZ"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": "-36.848461",
+            "longitude": "174.763336"
           },
           "areaServed": {
             "@type": "Country",
@@ -118,6 +131,34 @@
           "url": "https://www.blyntic.co.nz",
           "name": "Blyntic",
           "publisher": { "@id": "https://www.blyntic.co.nz/#organization" }
+        },
+        {
+          "@type": "SpeakableSpecification",
+          "cssSelector": ["h1", "h2", ".answer-first-summary", "p.hero-lead"]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://www.blyntic.co.nz/#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://www.blyntic.co.nz/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "AI Solutions",
+              "item": "https://www.blyntic.co.nz/#/solutions"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "FAQ",
+              "item": "https://www.blyntic.co.nz/#/faq"
+            }
+          ]
         }
       ]
     }
@@ -125,26 +166,42 @@
   </head>
   <body>
     <noscript>
-      <div style="padding: 20px; font-family: sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto;">
+      <div style="padding: 24px; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; max-width: 900px; margin: 0 auto; color: #1e293b;">
         <h1>Blyntic | AI Automation Agency New Zealand</h1>
-        <p><strong>Less Work, More Growth.</strong> Blyntic builds AI voice agents, chatbots, and custom workflow automations that let you answer every call 24/7, automate repetitive business processes, and qualify leads instantly.</p>
+        <p class="answer-first-summary"><strong>Less Work, More Growth.</strong> Blyntic is an Auckland-based AI automation agency designing, building, and maintaining AI voice phone agents, conversational web/SMS chatbots, and n8n/Make.com workflow automations. We empower New Zealand businesses to answer calls 24/7, book appointments into CRMs, and automate repetitive admin work.</p>
         
-        <h2>Our Core AI Solutions</h2>
+        <h2>AI Automation Pricing in New Zealand (NZD)</h2>
         <ul>
-          <li><strong>AI Voice Agents:</strong> 24/7 phone support, instant lead response, calendar booking, and CRM updates built on Retell AI and Vapi.</li>
-          <li><strong>Conversational AI Chatbots:</strong> Intelligent chatbots built with Voiceflow that qualify leads, handle FAQs, and escalate to humans seamlessly.</li>
-          <li><strong>Workflow Automation:</strong> End-to-end automations built with n8n and Make.com, connecting to over 2,000 apps (Xero, HubSpot, Pipedrive, GoHighLevel, etc.).</li>
-          <li><strong>Smart Website AI:</strong> Ingesting AI capabilities directly into your web templates to make your operations highly responsive.</li>
+          <li><strong>AI Voice Agent Usage:</strong> $0.80 NZD per minute of talk time (billed by the second — a typical 30-second phone call costs ~$0.40 NZD).</li>
+          <li><strong>Pay-As-You-Go Plan:</strong> Starts with a $500 NZD credit deposit.</li>
+          <li><strong>Growth Plan:</strong> $899 NZD per month (includes 1,000 minutes of talk time).</li>
+          <li><strong>One-off Setup:</strong> $495 NZD (covers call flow design, voice tuning, calendar & CRM integrations, and live testing).</li>
         </ul>
 
-        <h2>About Blyntic</h2>
-        <p>Blyntic is an AI automation agency based in Auckland, New Zealand. We design, build, and maintain enterprise-grade AI agents and custom CRM integrations for trades, medical clinics, salons, real estate firms, and e-commerce brands across NZ.</p>
-        
-        <h2>Contact Details</h2>
+        <h2>Core AI Solutions & Services</h2>
+        <ul>
+          <li><strong>AI Voice Agents (Retell AI & Vapi):</strong> 24/7 inbound phone support, instant lead response, calendar booking into Google Calendar/Outlook, and real-time CRM updates.</li>
+          <li><strong>Conversational AI Chatbots (Voiceflow):</strong> 24/7 website chat & messaging bots to qualify leads, answer FAQs, and escalate complex requests to human staff.</li>
+          <li><strong>Workflow Automation (n8n & Make.com):</strong> Connect 2,000+ apps (Xero, HubSpot, Pipedrive, GoHighLevel, Shopify, Gmail) to automate invoices, lead triage, and client onboarding.</li>
+          <li><strong>Smart Website AI:</strong> Injecting AI capabilities into modern web applications for instant customer responses.</li>
+        </ul>
+
+        <h2>Frequently Asked Questions</h2>
+        <h3>What does an AI automation agency do?</h3>
+        <p>An AI automation agency designs, builds, and maintains AI systems that handle repetitive business tasks — phone calls, lead responses, scheduling, and CRM updates — allowing business owners to scale without expanding headcount.</p>
+
+        <h3>Can AI answer my business calls 24/7?</h3>
+        <p>Yes. Blyntic voice agents answer calls 24/7 with under 1 second response latency, natural voices, and New Zealand accent customization, qualifying leads and booking jobs directly.</p>
+
+        <h3>Do clients own the automations?</h3>
+        <p>Yes. 100% full ownership of all workflows, prompts, and configurations is transferred to client-owned accounts upon final payment.</p>
+
+        <h2>Contact Information</h2>
         <p>
           Email: <a href="mailto:jude@blyntic.co.nz">jude@blyntic.co.nz</a><br>
           Phone: <a href="tel:+64223037330">(+64) 223 037 330</a><br>
-          Location: Auckland, New Zealand
+          Location: Auckland, New Zealand<br>
+          Website: <a href="https://www.blyntic.co.nz">https://www.blyntic.co.nz</a>
         </p>
       </div>
     </noscript>
