@@ -23,7 +23,7 @@ export interface FAQData {
 }
 
 interface StructuredDataProps {
-  pageType: 'home' | 'blogIndex' | 'blogPost' | 'service' | 'contact' | 'faq' | 'generic';
+  pageType: 'home' | 'blogIndex' | 'blogPost' | 'service' | 'contact' | 'faq' | 'privacy' | 'generic';
   blogPostData?: BlogPostData;
   serviceData?: ServiceData;
   faqDataList?: FAQData[];
@@ -247,6 +247,23 @@ export const StructuredData: React.FC<StructuredDataProps> = ({
           }))
         };
       }
+      break;
+    }
+
+    case 'privacy': {
+      schema = {
+        '@context': 'https://schema.org',
+        '@graph': [
+          organizationSchema,
+          {
+            '@type': 'WebPage',
+            '@id': `${domain}/#/privacy#webpage`,
+            'url': `${domain}/#/privacy`,
+            'name': 'Privacy Policy | Blyntic AI Agency NZ',
+            'description': 'Official Privacy Policy for Blyntic AI Automation Agency, detailing how we collect, process, protect, and respect business and personal data in accordance with the New Zealand Privacy Act 2020 and Google compliance standards.'
+          }
+        ]
+      };
       break;
     }
 

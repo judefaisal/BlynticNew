@@ -52,6 +52,7 @@ const Footer: React.FC = () => {
               <li><a href="#/blog" className="hover:text-black transition-colors">Blog</a></li>
               <li><a href="#/contact" className="hover:text-black transition-colors">Contact</a></li>
               <li><a href="#/faq" className="hover:text-black transition-colors">AEO/GEO FAQs</a></li>
+              <li><a href="#/privacy" className="hover:text-black transition-colors">Privacy Policy</a></li>
             </ul>
           </div>
 
@@ -68,11 +69,11 @@ const Footer: React.FC = () => {
 
         {/* Bottom Bar */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-500">
-          <p>© 2024 BLYNTIC Inc. All rights reserved.</p>
+          <p>© 2026 BLYNTIC Inc. All rights reserved.</p>
           <div className="flex gap-8">
-            <a href="#" className="hover:text-black">Privacy Policy</a>
-            <a href="#" className="hover:text-black">Terms of Service</a>
-            <a href="#" className="hover:text-black">Cookies Settings</a>
+            <a href="#/privacy" className="hover:text-black transition-colors">Privacy Policy</a>
+            <a href="#/privacy#overview" className="hover:text-black transition-colors">Terms of Service</a>
+            <a href="#/privacy#cookies-analytics" className="hover:text-black transition-colors">Cookies Settings</a>
           </div>
         </div>
 

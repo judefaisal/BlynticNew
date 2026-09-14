@@ -21,6 +21,7 @@ const FullAISolution = lazy(() => import('./components/FullAISolution'));
 const AIMarketing = lazy(() => import('./components/AIMarketing'));
 const Contact = lazy(() => import('./components/ui/travel-connect-signin-1'));
 const FAQPage = lazy(() => import('./components/FAQPage'));
+const PrivacyPolicy = lazy(() => import('./components/PrivacyPolicy'));
 
 const LoadingSpinner = () => (
   <div className="min-h-screen flex items-center justify-center bg-slate-50">
@@ -43,7 +44,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (currentHash === '#/talk-to-sales' || currentHash === '#/ai-customer-service' || currentHash === '#/ai-chatbots' || currentHash === '#/smart-website' || currentHash === '#/full-ai-solution' || currentHash === '#/ai-marketing' || currentHash === '#/contact' || currentHash === '#/faq') {
+    if (currentHash === '#/talk-to-sales' || currentHash === '#/ai-customer-service' || currentHash === '#/ai-chatbots' || currentHash === '#/smart-website' || currentHash === '#/full-ai-solution' || currentHash === '#/ai-marketing' || currentHash === '#/contact' || currentHash === '#/faq' || currentHash === '#/privacy' || currentHash.startsWith('#/privacy')) {
       window.scrollTo(0, 0);
     }
   }, [currentHash]);
@@ -58,10 +59,11 @@ function App() {
   const isAIMarketingPage = currentHash === '#/ai-marketing';
   const isContactPage = currentHash === '#/contact';
   const isFAQPage = currentHash === '#/faq';
+  const isPrivacyPolicyPage = currentHash === '#/privacy' || currentHash.startsWith('#/privacy');
 
   return (
     <main className="font-sans text-brand-black bg-white selection:bg-blue-200 selection:text-black">
-      <Navbar isTalkToSalesPage={isTalkToSalesPage || isAICustomerServicePage || isAIChatbotsPage || isSmartWebsitePage || isFullAISolutionPage || isAIMarketingPage || isContactPage || isFAQPage} />
+      <Navbar isTalkToSalesPage={isTalkToSalesPage || isAICustomerServicePage || isAIChatbotsPage || isSmartWebsitePage || isFullAISolutionPage || isAIMarketingPage || isContactPage || isFAQPage || isPrivacyPolicyPage} />
       
       <Suspense fallback={<LoadingSpinner />}>
         {isTalkToSalesPage ? (
@@ -141,6 +143,8 @@ function App() {
           </>
         ) : isFAQPage ? (
           <FAQPage />
+        ) : isPrivacyPolicyPage ? (
+          <PrivacyPolicy />
         ) : isBlogPage ? (
           <Blog />
         ) : isBlogDetailPage ? (
