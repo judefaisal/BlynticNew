@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Reveal } from './ui/Reveal';
 import { Calendar } from 'lucide-react';
+import { trackMetaSchedule } from '../utils/metaPixel';
 
 const TalkToSales: React.FC = () => {
   useEffect(() => {
@@ -42,6 +43,17 @@ const TalkToSales: React.FC = () => {
         layout: "month_view"
       });
       Cal.ns["30min"]("ui", {"hideEventTypeDetails":false,"layout":"month_view"});
+      
+      // Track Meta Schedule event when appointment booking is completed
+      Cal.ns["30min"]("on", {
+        action: "bookingSuccessful",
+        callback: (e: any) => {
+          trackMetaSchedule({
+            content_name: '30min Consultation Booking',
+            currency: 'NZD'
+          });
+        }
+      });
     }
   }, []);
 

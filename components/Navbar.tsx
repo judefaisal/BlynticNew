@@ -140,6 +140,19 @@ const Navbar: React.FC<NavbarProps> = ({ isTalkToSalesPage = false }) => {
            >
              Resources
            </a>
+           <a 
+             href="#/blog"
+             className="px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 text-gray-600 hover:text-black hover:bg-gray-100"
+           >
+             Blog
+           </a>
+           <a 
+             href="#/review"
+             className="px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 text-gray-600 hover:text-blue-600 hover:bg-gray-100 flex items-center gap-1"
+           >
+             <span>Review Us</span>
+             <span className="text-amber-500 text-xs">★</span>
+           </a>
         </div>
 
         {/* Desktop CTA */}
@@ -243,6 +256,21 @@ const Navbar: React.FC<NavbarProps> = ({ isTalkToSalesPage = false }) => {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Resources
+              </a>
+              <a 
+                href="#/blog"
+                className="text-2xl font-display font-medium text-black"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Blog
+              </a>
+              <a 
+                href="#/review"
+                className="text-2xl font-display font-medium text-blue-600 flex items-center gap-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <span>Review Us</span>
+                <span className="text-amber-500 text-xl">★</span>
               </a>
               
               <div className="mt-4">

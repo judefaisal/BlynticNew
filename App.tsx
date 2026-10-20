@@ -9,6 +9,7 @@ import WhyChoose from './components/WhyChoose';
 import HowItWorks from './components/HowItWorks';
 import Footer from './components/Footer';
 import { StructuredData } from './components/StructuredData';
+import { trackMetaPageView } from './utils/metaPixel';
 
 // Lazy load heavy page routes for optimal speed and SEO/AEO indexability
 const TalkToSales = lazy(() => import('./components/TalkToSales'));
@@ -22,6 +23,7 @@ const AIMarketing = lazy(() => import('./components/AIMarketing'));
 const Contact = lazy(() => import('./components/ui/travel-connect-signin-1'));
 const FAQPage = lazy(() => import('./components/FAQPage'));
 const PrivacyPolicy = lazy(() => import('./components/PrivacyPolicy'));
+const ReviewCollector = lazy(() => import('./components/ReviewCollector'));
 
 const LoadingSpinner = () => (
   <div className="min-h-screen flex items-center justify-center bg-slate-50">
@@ -38,13 +40,14 @@ function App() {
   useEffect(() => {
     const handleHashChange = () => {
       setCurrentHash(window.location.hash);
+      trackMetaPageView();
     };
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
   useEffect(() => {
-    if (currentHash === '#/talk-to-sales' || currentHash === '#/ai-customer-service' || currentHash === '#/ai-chatbots' || currentHash === '#/smart-website' || currentHash === '#/full-ai-solution' || currentHash === '#/ai-marketing' || currentHash === '#/contact' || currentHash === '#/faq' || currentHash === '#/privacy' || currentHash.startsWith('#/privacy')) {
+    if (currentHash === '#/talk-to-sales' || currentHash === '#/ai-customer-service' || currentHash === '#/ai-chatbots' || currentHash === '#/smart-website' || currentHash === '#/full-ai-solution' || currentHash === '#/ai-marketing' || currentHash === '#/contact' || currentHash === '#/faq' || currentHash === '#/privacy' || currentHash.startsWith('#/privacy') || currentHash === '#/blog' || currentHash.startsWith('#/blog') || currentHash === '#/review' || currentHash === '#/reviews' || currentHash === '#/google-review') {
       window.scrollTo(0, 0);
     }
   }, [currentHash]);
@@ -60,10 +63,11 @@ function App() {
   const isContactPage = currentHash === '#/contact';
   const isFAQPage = currentHash === '#/faq';
   const isPrivacyPolicyPage = currentHash === '#/privacy' || currentHash.startsWith('#/privacy');
+  const isReviewPage = currentHash === '#/review' || currentHash === '#/reviews' || currentHash === '#/google-review';
 
   return (
     <main className="font-sans text-brand-black bg-white selection:bg-blue-200 selection:text-black">
-      <Navbar isTalkToSalesPage={isTalkToSalesPage || isAICustomerServicePage || isAIChatbotsPage || isSmartWebsitePage || isFullAISolutionPage || isAIMarketingPage || isContactPage || isFAQPage || isPrivacyPolicyPage} />
+      <Navbar isTalkToSalesPage={isTalkToSalesPage || isAICustomerServicePage || isAIChatbotsPage || isSmartWebsitePage || isFullAISolutionPage || isAIMarketingPage || isContactPage || isFAQPage || isPrivacyPolicyPage || isBlogPage || isBlogDetailPage || isReviewPage} />
       
       <Suspense fallback={<LoadingSpinner />}>
         {isTalkToSalesPage ? (
@@ -76,10 +80,11 @@ function App() {
             <StructuredData 
               pageType="service" 
               serviceData={{
-                name: 'AI Customer Support & Service Automation',
-                description: 'Deploy autonomous AI agents that handle phone calls, text chat, and email tickets 24/7. Fully integrated with your helpdesk, CRM and scheduling databases.',
-                category: 'AI Support Automation',
-                url: '#/ai-customer-service'
+                name: 'AI Phone Receptionist & Voice Agents',
+                description: '24/7 AI phone answering, appointment booking into Google Calendar/Cliniko/Timely, customer check-in, reminder dispatch, and outbound calls built on Retell AI and Vapi. Never miss another customer call.',
+                category: 'AI Telephony & Voice Agents',
+                url: '#/ai-customer-service',
+                pricingInfo: '$0.80 NZD per minute talk time (billed by the second), $899 NZD/mo Growth plan (1,000 mins), or 1-month free software trial with Blyntic.co.nz.'
               }} 
             />
             <AICustomerService />
@@ -149,6 +154,19 @@ function App() {
           <Blog />
         ) : isBlogDetailPage ? (
           <BlogDetails />
+        ) : isReviewPage ? (
+          <>
+            <StructuredData 
+              pageType="review" 
+              serviceData={{
+                name: 'Google Business Profile Review Automation',
+                description: 'Share your feedback and submit a verified Google Business review for Blyntic AI Automation Agency.',
+                category: 'Reputation Management',
+                url: '#/review'
+              }} 
+            />
+            <ReviewCollector />
+          </>
         ) : (
           <>
             <StructuredData pageType="home" />

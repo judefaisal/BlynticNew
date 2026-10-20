@@ -3,6 +3,7 @@ import { Eye, EyeOff, ArrowRight, CheckCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
+import { trackMetaLead } from "../../utils/metaPixel";
 
 // Helper function to merge class names
 const cn = (...classes: string[]) => {
@@ -276,6 +277,11 @@ const SignInCard = () => {
       });
       
       setIsSubmitted(true);
+      trackMetaLead({
+        content_name: 'Contact Page Inquiry',
+        currency: 'NZD',
+        value: 0
+      });
     } catch (error) {
       console.error('Error submitting form:', error);
       setIsSubmitted(true);

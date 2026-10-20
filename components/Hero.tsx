@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import Button from './ui/Button';
 import LottiePlayer from './ui/LottiePlayer';
-import { ArrowDownRight, ArrowRight, Sparkles, PhoneCall } from 'lucide-react';
+import { ArrowDownRight, ArrowRight, Sparkles } from 'lucide-react';
 import { Reveal } from './ui/Reveal';
 
 const Hero: React.FC = () => {
@@ -46,19 +46,9 @@ const Hero: React.FC = () => {
 
             <Reveal delay={0.3}>
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                <a 
-                  href="tel:098884632"
-                  className="group inline-flex items-center gap-3 bg-blue-600 text-white px-8 py-4 rounded-full text-lg font-medium hover:bg-blue-700 hover:scale-105 transition-all shadow-lg"
-                >
-                  <PhoneCall size={18} className="animate-pulse" />
-                  <div className="flex flex-col text-left">
-                    <span className="font-semibold leading-tight">Talk to AI Assistant</span>
-                    <span className="text-sm text-blue-100 font-normal leading-tight">Call 09 888 4632</span>
-                  </div>
-                </a>
-                <div className="text-sm text-gray-500 font-medium">
-                  to book your free appointment<br/>and get started
-                </div>
+                <Button variant="black" href="#/talk-to-sales" className="text-lg px-8 py-4">
+                  Talk to sales
+                </Button>
               </div>
             </Reveal>
 

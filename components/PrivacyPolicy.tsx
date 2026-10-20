@@ -443,6 +443,7 @@ const PrivacyPolicy: React.FC = () => {
                 <ul className="list-disc list-inside space-y-2 pl-2 text-slate-700">
                   <li><strong>Strictly Necessary Cookies:</strong> Essential for you to browse the site, use core features, and access secure account areas. Without these cookies, services like login authentication cannot function.</li>
                   <li><strong>Performance & Analytics Cookies:</strong> Enable us to recognize and count visitors and understand how visitors move around our site (e.g., via Google Analytics). This assists us in optimizing navigation and load times.</li>
+                  <li><strong>Advertising & Conversion Tracking (Meta Pixel):</strong> We use the Meta Pixel (Facebook Pixel) provided by Meta Platforms, Inc. to measure conversion events (e.g., booking consultation calls or submitting inquiry forms) and optimize advertising audiences. Meta may associate this activity with your Facebook or Instagram account in accordance with Meta&apos;s Data Policy.</li>
                   <li><strong>Functional Cookies:</strong> Used to recognize you when you return to our website, remember your preferences (such as audio volume or form pre-fills), and personalize your visit.</li>
                 </ul>
 
@@ -450,19 +451,35 @@ const PrivacyPolicy: React.FC = () => {
                 <p>
                   You have the right to decide whether to accept or reject cookies. You can set or amend your web browser controls to accept or refuse cookies. If you choose to reject cookies, you may still use our website, though your access to some functionality and areas of our website may be restricted.
                 </p>
-                <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 mt-3">
-                  <p className="text-xs font-semibold text-slate-900 mb-1">Google Analytics Opt-Out Tool:</p>
-                  <p className="text-xs text-slate-600 mb-2">
-                    To provide website visitors more choice on how their data is collected by Google Analytics, Google has developed the Google Analytics Opt-out Browser Add-on.
-                  </p>
-                  <a 
-                    href="https://tools.google.com/dlpage/gaoptout" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs text-blue-600 font-semibold hover:underline"
-                  >
-                    Download Google Analytics Opt-out Browser Add-on <ExternalLink className="w-3 h-3" />
-                  </a>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <p className="text-xs font-semibold text-slate-900 mb-1">Google Analytics Opt-Out:</p>
+                    <p className="text-xs text-slate-600 mb-2">
+                      To opt out of measurement by Google Analytics, use the official browser add-on.
+                    </p>
+                    <a 
+                      href="https://tools.google.com/dlpage/gaoptout" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs text-blue-600 font-semibold hover:underline"
+                    >
+                      Google Analytics Opt-out <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
+                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <p className="text-xs font-semibold text-slate-900 mb-1">Meta Ad Preferences & Opt-Out:</p>
+                    <p className="text-xs text-slate-600 mb-2">
+                      To opt out of interest-based ads delivered by Meta, adjust your Meta account preferences or visit the Digital Advertising Alliance.
+                    </p>
+                    <a 
+                      href="https://www.facebook.com/adpreferences" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs text-blue-600 font-semibold hover:underline"
+                    >
+                      Meta Ad Preferences <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
                 </div>
               </div>
             </section>

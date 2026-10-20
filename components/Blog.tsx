@@ -367,7 +367,10 @@ const Blog: React.FC = () => {
                       animate={{ opacity: 1, scale: 1 }}
                       className="group bg-white rounded-[24px] border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full"
                     >
-                      <div className="relative aspect-[16/10] overflow-hidden">
+                      <a 
+                        href={`#/blog/${blog.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`}
+                        className="block relative aspect-[16/10] overflow-hidden"
+                      >
                         <img 
                           src={blog.imageUrl.includes('unsplash.com') ? `https://picsum.photos/seed/${blog.id}/800/500` : blog.imageUrl} 
                           alt={blog.title} 
@@ -378,24 +381,24 @@ const Blog: React.FC = () => {
                           }}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                         />
-                        <div className="absolute top-4 right-4 flex gap-2 z-10">
-                          {isLoggedIn && (
-                            <button 
-                              onClick={() => handleEdit(blog)}
-                              className="p-2 bg-white/90 backdrop-blur-sm rounded-full text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-sm"
-                              title="Edit Article"
-                            >
-                              <Edit3 className="w-4 h-4" />
-                            </button>
-                          )}
+                      </a>
+                      <div className="absolute top-4 right-4 flex gap-2 z-10">
+                        {isLoggedIn && (
                           <button 
-                            onClick={() => handleDelete(blog.id)}
-                            className="p-2 bg-white/90 backdrop-blur-sm rounded-full text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-sm"
-                            title="Delete Article"
+                            onClick={() => handleEdit(blog)}
+                            className="p-2 bg-white/90 backdrop-blur-sm rounded-full text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-sm"
+                            title="Edit Article"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Edit3 className="w-4 h-4" />
                           </button>
-                        </div>
+                        )}
+                        <button 
+                          onClick={() => handleDelete(blog.id)}
+                          className="p-2 bg-white/90 backdrop-blur-sm rounded-full text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-sm"
+                          title="Delete Article"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </div>
                       
                       <div className="p-6 flex flex-col flex-1">
@@ -408,9 +411,11 @@ const Blog: React.FC = () => {
                           </span>
                         </div>
                         
-                        <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-3 line-clamp-2 leading-snug group-hover:text-blue-600 transition-colors">
-                          {blog.title}
-                        </h3>
+                        <a href={`#/blog/${blog.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`}>
+                          <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-3 line-clamp-2 leading-snug group-hover:text-blue-600 transition-colors">
+                            {blog.title}
+                          </h3>
+                        </a>
                         
                         <p className="text-gray-500 text-sm line-clamp-3 mb-6 leading-relaxed flex-1">
                           {blog.content.replace(/[#*`\-]/g, '').substring(0, 140).trim() + '...'}
