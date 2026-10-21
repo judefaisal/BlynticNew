@@ -35,6 +35,7 @@ const Footer: React.FC = () => {
           <div>
             <h4 className="font-bold mb-6">Solutions</h4>
             <ul className="space-y-4 text-gray-600">
+              <li><a href="#/apps-development" className="hover:text-black transition-colors font-medium text-blue-600">Apps Development (iOS & Android)</a></li>
               <li><a href="#/ai-customer-service" className="hover:text-black transition-colors">AI Customer Service</a></li>
               <li><a href="#/ai-chatbots" className="hover:text-black transition-colors">AI Chatbots</a></li>
               <li><a href="#/smart-website" className="hover:text-black transition-colors">Smart Website</a></li>

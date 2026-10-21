@@ -61,6 +61,7 @@ const Navbar: React.FC<NavbarProps> = ({ isTalkToSalesPage = false }) => {
   ];
 
   const solutionLinks = [
+    { name: 'Apps Development (iOS & Android)', href: '#/apps-development' },
     { name: 'AI customer service', href: '#/ai-customer-service' },
     { name: 'AI chatbots', href: '#/ai-chatbots' },
     { name: 'Smart website', href: '#/smart-website' },

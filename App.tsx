@@ -13,6 +13,7 @@ import { trackMetaPageView } from './utils/metaPixel';
 
 // Lazy load heavy page routes for optimal speed and SEO/AEO indexability
 const TalkToSales = lazy(() => import('./components/TalkToSales'));
+const MobileAppDevelopment = lazy(() => import('./components/MobileAppDevelopment'));
 const Blog = lazy(() => import('./components/Blog'));
 const BlogDetails = lazy(() => import('./components/BlogDetails'));
 const AICustomerService = lazy(() => import('./components/AICustomerService'));
@@ -47,11 +48,12 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (currentHash === '#/talk-to-sales' || currentHash === '#/ai-customer-service' || currentHash === '#/ai-chatbots' || currentHash === '#/smart-website' || currentHash === '#/full-ai-solution' || currentHash === '#/ai-marketing' || currentHash === '#/contact' || currentHash === '#/faq' || currentHash === '#/privacy' || currentHash.startsWith('#/privacy') || currentHash === '#/blog' || currentHash.startsWith('#/blog') || currentHash === '#/review' || currentHash === '#/reviews' || currentHash === '#/google-review') {
+    if (currentHash === '#/talk-to-sales' || currentHash === '#/apps-development' || currentHash === '#/mobile-app-development' || currentHash === '#/ai-customer-service' || currentHash === '#/ai-chatbots' || currentHash === '#/smart-website' || currentHash === '#/full-ai-solution' || currentHash === '#/ai-marketing' || currentHash === '#/contact' || currentHash === '#/faq' || currentHash === '#/privacy' || currentHash.startsWith('#/privacy') || currentHash === '#/blog' || currentHash.startsWith('#/blog') || currentHash === '#/review' || currentHash === '#/reviews' || currentHash === '#/google-review') {
       window.scrollTo(0, 0);
     }
   }, [currentHash]);
 
+  const isAppsDevelopmentPage = currentHash === '#/apps-development' || currentHash === '#/mobile-app-development';
   const isTalkToSalesPage = currentHash === '#/talk-to-sales';
   const isBlogPage = currentHash === '#/blog';
   const isBlogDetailPage = currentHash.startsWith('#/blog/');
@@ -67,10 +69,23 @@ function App() {
 
   return (
     <main className="font-sans text-brand-black bg-white selection:bg-blue-200 selection:text-black">
-      <Navbar isTalkToSalesPage={isTalkToSalesPage || isAICustomerServicePage || isAIChatbotsPage || isSmartWebsitePage || isFullAISolutionPage || isAIMarketingPage || isContactPage || isFAQPage || isPrivacyPolicyPage || isBlogPage || isBlogDetailPage || isReviewPage} />
+      <Navbar isTalkToSalesPage={isAppsDevelopmentPage || isTalkToSalesPage || isAICustomerServicePage || isAIChatbotsPage || isSmartWebsitePage || isFullAISolutionPage || isAIMarketingPage || isContactPage || isFAQPage || isPrivacyPolicyPage || isBlogPage || isBlogDetailPage || isReviewPage} />
       
       <Suspense fallback={<LoadingSpinner />}>
-        {isTalkToSalesPage ? (
+        {isAppsDevelopmentPage ? (
+          <>
+            <StructuredData 
+              pageType="service" 
+              serviceData={{
+                name: 'Custom iOS & Android Mobile App Development',
+                description: 'Custom iOS and Android mobile app development for businesses and enterprise clients. Native Swift, Kotlin, Flutter, cross-platform architecture, offline-first sync, on-device AI, and App Store submission.',
+                category: 'Mobile Application Development',
+                url: '#/apps-development'
+              }} 
+            />
+            <MobileAppDevelopment />
+          </>
+        ) : isTalkToSalesPage ? (
           <>
             <StructuredData pageType="contact" />
             <TalkToSales />

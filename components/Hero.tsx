@@ -2,7 +2,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import Button from './ui/Button';
 import LottiePlayer from './ui/LottiePlayer';
-import { ArrowDownRight, ArrowRight, Sparkles } from 'lucide-react';
 import { Reveal } from './ui/Reveal';
 
 const Hero: React.FC = () => {
