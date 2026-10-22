@@ -62,11 +62,6 @@ const Navbar: React.FC<NavbarProps> = ({ isTalkToSalesPage = false }) => {
 
   const solutionLinks = [
     { name: 'Apps Development (iOS & Android)', href: '#/apps-development' },
-    { name: 'AI customer service', href: '#/ai-customer-service' },
-    { name: 'AI chatbots', href: '#/ai-chatbots' },
-    { name: 'Smart website', href: '#/smart-website' },
-    { name: 'Full AI solution for companies', href: '#/full-ai-solution' },
-    { name: 'AI Marketing', href: '#/ai-marketing' },
   ];
 
   return (
@@ -100,11 +95,12 @@ const Navbar: React.FC<NavbarProps> = ({ isTalkToSalesPage = false }) => {
              onMouseEnter={() => setIsSolutionsOpen(true)}
              onMouseLeave={() => setIsSolutionsOpen(false)}
            >
-             <button 
+             <a 
+               href="#/apps-development"
                className="flex items-center gap-1 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 text-gray-600 hover:text-black hover:bg-gray-100"
              >
                Solution <ChevronDown className="w-4 h-4" />
-             </button>
+             </a>
              
              <AnimatePresence>
                {isSolutionsOpen && (
@@ -113,13 +109,14 @@ const Navbar: React.FC<NavbarProps> = ({ isTalkToSalesPage = false }) => {
                    animate={{ opacity: 1, y: 0 }}
                    exit={{ opacity: 0, y: 10 }}
                    transition={{ duration: 0.2 }}
-                   className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 overflow-hidden"
+                   className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-72 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 overflow-hidden"
                  >
                    {solutionLinks.map((link, idx) => (
                      <a 
                        key={idx} 
                        href={link.href}
-                       className="block px-4 py-3 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                       onClick={() => setIsSolutionsOpen(false)}
+                       className="block px-4 py-3 text-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors font-medium"
                      >
                        {link.name}
                      </a>
@@ -227,15 +224,19 @@ const Navbar: React.FC<NavbarProps> = ({ isTalkToSalesPage = false }) => {
               </a>
               
               <div className="flex flex-col items-center gap-4 w-full px-8">
-                <span className="text-2xl font-display font-medium text-black flex items-center gap-2">
-                  Solution <ChevronDown className="w-5 h-5" />
-                </span>
+                <a 
+                  href="#/apps-development"
+                  className="text-2xl font-display font-medium text-black flex items-center gap-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Solution <ChevronDown className="w-5 h-5 text-gray-400" />
+                </a>
                 <div className="flex flex-col items-center gap-3 bg-gray-50 w-full py-4 rounded-2xl">
                   {solutionLinks.map((link, idx) => (
                     <a 
                       key={idx} 
                       href={link.href}
-                      className="text-lg text-gray-600"
+                      className="text-lg text-blue-600 font-medium"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       {link.name}

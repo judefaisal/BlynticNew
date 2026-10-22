@@ -126,9 +126,10 @@ async function startServer() {
     }
   });
 
-  const DEFAULT_N8N_WEBHOOK_URL =
-    process.env.N8N_REVIEW_WEBHOOK_URL ||
-    "https://n8n.srv1310032.hstgr.cloud/webhook/gbp-review";
+  const DEFAULT_MAKE_WEBHOOK_URL =
+    process.env.MAKE_REVIEW_WEBHOOK_URL ||
+    process.env.VITE_MAKE_REVIEW_WEBHOOK_URL ||
+    "https://hook.us2.make.com/cmmqxn225heqftqkn3bd6q37eydnv2qs";
 
   // Get review system config (default Google review link and webhook availability)
   app.get("/api/reviews/config", (req, res) => {
@@ -137,16 +138,18 @@ async function startServer() {
         process.env.VITE_GOOGLE_BUSINESS_REVIEW_URL ||
         process.env.GOOGLE_BUSINESS_REVIEW_URL ||
         "https://search.google.com/local/writereview?placeid=ChIJ-3-BlynticNZ",
-      webhookUrl: DEFAULT_N8N_WEBHOOK_URL,
+      webhookUrl: DEFAULT_MAKE_WEBHOOK_URL,
+      makeWebhookUrl: DEFAULT_MAKE_WEBHOOK_URL,
+      platform: "Make.com",
       hasServerWebhookConfigured: true,
       serverWebhookUrlConfigured: true
     });
   });
 
-  // Test n8n webhook connectivity
+  // Test Make.com webhook connectivity
   app.post("/api/reviews/test-webhook", async (req, res) => {
     const { webhookUrl } = req.body;
-    const targetUrl = webhookUrl || DEFAULT_N8N_WEBHOOK_URL;
+    const targetUrl = webhookUrl || DEFAULT_MAKE_WEBHOOK_URL;
 
     if (!targetUrl) {
       return res.status(400).json({
@@ -156,17 +159,27 @@ async function startServer() {
     }
 
     const testPayload = {
-      event: "google_review_test",
+      event: "google_business_review_test",
       timestamp: new Date().toISOString(),
+      formattedDate: new Date().toLocaleString("en-NZ", { timeZone: "Pacific/Auckland" }),
       test: true,
-      reviewerName: "John Doe (Test Reviewer)",
+      targetPlatform: "Google Business Profile",
+      reviewerName: "Alex Morgan (Test Reviewer)",
       reviewerEmail: "test@blyntic.co.nz",
+      reviewerPhone: "+64 22 123 4567",
+      companyName: "Auckland Health Group Ltd",
       rating: 5,
-      reviewText: "Blyntic transformed our business operations with automated 24/7 AI call answering! (Test ping)",
+      isPositiveReview: true,
+      isFiveStar: true,
+      reviewText: "Blyntic automated our business phone bookings and customer service seamlessly! High ROI and stellar Auckland team. (Test ping to Make.com)",
       recommend: true,
-      serviceUsed: "AI Receptionist & Phone Automation",
-      tags: ["AI Receptionist", "Fast Response", "High ROI"],
-      source: "n8n_test_button"
+      serviceUsed: "Apps Development (iOS & Android)",
+      tags: ["⚡ Instant Lead Capture & Response", "🤖 24/7 AI Phone Receptionist", "💰 High ROI & Cut Operational Costs"],
+      tagsString: "⚡ Instant Lead Capture & Response, 🤖 24/7 AI Phone Receptionist, 💰 High ROI & Cut Operational Costs",
+      googleReviewRedirectUrl:
+        process.env.VITE_GOOGLE_BUSINESS_REVIEW_URL ||
+        "https://search.google.com/local/writereview?placeid=ChIJ-3-BlynticNZ",
+      source: "make_com_test_button"
     };
 
     const startTime = Date.now();
@@ -175,7 +188,7 @@ async function startServer() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "User-Agent": "Blyntic-Reviews-Webhook-Client/1.0"
+          "User-Agent": "Blyntic-Make-Review-Client/1.0"
         },
         body: JSON.stringify(testPayload)
       });
@@ -192,21 +205,17 @@ async function startServer() {
           responseSample: responseText.slice(0, 500)
         });
       } else {
-        let isInactiveHint = "";
-        if (webhookResponse.status === 404 && responseText.includes("not registered")) {
-          isInactiveHint = " — Reached n8n server! Toggle the workflow to 'Active' in the top-right of the n8n editor.";
-        }
         return res.status(webhookResponse.status).json({
           success: false,
           status: webhookResponse.status,
           statusText: webhookResponse.statusText,
           latencyMs,
-          error: `n8n webhook returned HTTP ${webhookResponse.status}${isInactiveHint}`
+          error: `Make.com webhook returned HTTP ${webhookResponse.status}: ${responseText.slice(0, 200)}`
         });
       }
     } catch (err: any) {
       const latencyMs = Date.now() - startTime;
-      console.error("Error testing n8n webhook:", err);
+      console.error("Error testing Make.com webhook:", err);
       return res.status(502).json({
         success: false,
         latencyMs,
@@ -215,7 +224,7 @@ async function startServer() {
     }
   });
 
-  // Submit Review and forward to n8n webhook
+  // Submit Review and forward to Make.com webhook for Google Business profile automation
   app.post("/api/reviews/submit", async (req, res) => {
     try {
       const {
@@ -239,21 +248,27 @@ async function startServer() {
         });
       }
 
+      const tagsArray = Array.isArray(tags) ? tags : [];
       const reviewPayload = {
-        event: "google_review_submitted",
+        event: "google_business_review_submitted",
         timestamp: new Date().toISOString(),
+        formattedDate: new Date().toLocaleString("en-NZ", { timeZone: "Pacific/Auckland" }),
+        targetPlatform: "Google Business Profile",
         rating: Number(rating),
         sentiment: Number(rating) >= 4 ? "positive" : Number(rating) === 3 ? "neutral" : "negative",
+        isPositiveReview: Number(rating) >= 4,
+        isFiveStar: Number(rating) === 5,
         isNegativeAlert: Number(rating) <= 3,
-        reviewerName,
-        reviewerEmail,
-        reviewerPhone: reviewerPhone || "",
-        companyName: companyName || "",
-        serviceUsed: serviceUsed || "AI Automation",
-        tags: Array.isArray(tags) ? tags : [],
-        reviewText: reviewText || "",
+        reviewerName: String(reviewerName).trim(),
+        reviewerEmail: String(reviewerEmail).trim(),
+        reviewerPhone: reviewerPhone ? String(reviewerPhone).trim() : "",
+        companyName: companyName ? String(companyName).trim() : "",
+        serviceUsed: serviceUsed || "Apps Development (iOS & Android)",
+        tags: tagsArray,
+        tagsString: tagsArray.join(", "),
+        reviewText: reviewText ? String(reviewText).trim() : "",
         recommend: Boolean(recommend),
-        source: "blyntic_review_funnel",
+        source: "blyntic_review_portal",
         googleReviewRedirectUrl:
           process.env.VITE_GOOGLE_BUSINESS_REVIEW_URL ||
           process.env.GOOGLE_BUSINESS_REVIEW_URL ||
@@ -261,7 +276,7 @@ async function startServer() {
         metadata: metadata || {}
       };
 
-      const webhookUrl = customWebhookUrl || DEFAULT_N8N_WEBHOOK_URL;
+      const webhookUrl = customWebhookUrl || DEFAULT_MAKE_WEBHOOK_URL;
       let webhookResult: any = { delivered: false, note: "No webhook URL provided" };
 
       if (webhookUrl) {
@@ -271,7 +286,7 @@ async function startServer() {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "User-Agent": "Blyntic-Reviews-Webhook-Client/1.0"
+              "User-Agent": "Blyntic-Make-Review-Client/1.0"
             },
             body: JSON.stringify(reviewPayload)
           });
@@ -284,25 +299,23 @@ async function startServer() {
             status: webhookResp.status,
             latencyMs,
             message: webhookResp.ok
-              ? "Delivered to n8n successfully"
-              : webhookResp.status === 404 && bodyText.includes("not registered")
-              ? "Dispatched to n8n production webhook (Note: Toggle workflow to 'Active' in n8n)"
-              : `n8n returned status ${webhookResp.status}`
+              ? "Delivered to Make.com successfully"
+              : `Make.com returned status ${webhookResp.status}: ${bodyText.slice(0, 150)}`
           };
         } catch (webhookErr: any) {
-          console.error("Failed to forward review to n8n webhook:", webhookErr);
+          console.error("Failed to forward review to Make.com webhook:", webhookErr);
           webhookResult = {
             delivered: false,
-            error: webhookErr.message || "Failed to reach n8n webhook"
+            error: webhookErr.message || "Failed to reach Make.com webhook"
           };
         }
       }
 
-      console.log(`[Review Submitted] ${rating}★ from ${reviewerName} (${reviewerEmail}) - Webhook delivered: ${webhookResult.delivered}`);
+      console.log(`[Review Submitted] ${rating}★ from ${reviewerName} (${reviewerEmail}) - Make.com delivered: ${webhookResult.delivered}`);
 
       return res.json({
         success: true,
-        message: "Review recorded successfully",
+        message: "Review recorded and forwarded to Make.com successfully",
         webhook: webhookResult,
         payload: {
           rating: reviewPayload.rating,
@@ -312,7 +325,7 @@ async function startServer() {
         }
       });
     } catch (error: any) {
-      console.error("Error submitting review:", error);
+      console.error("Error submitting review to Make.com:", error);
       res.status(500).json({ success: false, error: error.message || "Internal server error" });
     }
   });

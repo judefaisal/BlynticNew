@@ -99,13 +99,6 @@ const MobileAppDevelopment: React.FC = () => {
         {/* Hero Section */}
         <div className="max-w-4xl mx-auto text-center mb-16">
           <Reveal>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 font-medium text-sm mb-6 border border-blue-100 shadow-sm">
-              <Smartphone className="w-4 h-4 text-blue-600" />
-              <span>iOS & Android App Development</span>
-            </div>
-          </Reveal>
-          
-          <Reveal delay={0.1}>
             <h1 className="text-4xl md:text-6xl font-display font-bold text-gray-900 mb-6 leading-[1.15] tracking-tight">
               Custom Mobile Apps Built for <br className="hidden sm:inline" />
               <span className="text-blue-600">iOS & Android Excellence</span>
@@ -148,29 +141,12 @@ const MobileAppDevelopment: React.FC = () => {
               {/* Overlay Gradient */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
               
-              {/* Floating Badges */}
-              <div className="absolute top-4 left-4 sm:top-6 sm:left-6 flex flex-wrap gap-2">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md text-white text-xs font-semibold border border-white/20">
-                  <Apple className="w-3.5 h-3.5 text-white" /> iOS Native (SwiftUI)
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md text-white text-xs font-semibold border border-white/20">
-                  <Smartphone className="w-3.5 h-3.5 text-emerald-400" /> Android (Jetpack Compose)
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-600/80 backdrop-blur-md text-white text-xs font-semibold border border-blue-400/30">
-                  <Cpu className="w-3.5 h-3.5" /> Edge & On-Device AI
-                </span>
-              </div>
-
               {/* Bottom Caption Bar */}
               <div className="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-6 text-white flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div className="max-w-xl">
                   <p className="text-xs uppercase tracking-wider text-blue-400 font-mono font-semibold mb-1">Production Architecture</p>
                   <h3 className="text-lg sm:text-2xl font-bold font-display leading-snug">Enterprise Cross-Platform & Native Mobile Engineering</h3>
                   <p className="text-xs sm:text-sm text-gray-300 mt-1">From real-time field operations to executive companion dashboards, we turn complex client workflows into tactile, polished mobile software.</p>
-                </div>
-                <div className="hidden sm:flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-2">
-                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></div>
-                  <span className="text-xs text-white font-medium">Ready for App Store & Google Play</span>
                 </div>
               </div>
             </div>

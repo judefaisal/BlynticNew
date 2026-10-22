@@ -20,7 +20,9 @@ import {
   AlertCircle,
   HelpCircle,
   X,
-  MessageSquare
+  MessageSquare,
+  ChevronDown,
+  Briefcase
 } from 'lucide-react';
 import { Reveal } from './ui/Reveal';
 import { trackMetaLead } from '../utils/metaPixel';
@@ -37,96 +39,40 @@ const POPULAR_TAGS = [
 ];
 
 const SERVICE_OPTIONS = [
+  "Apps Development (iOS & Android)",
   "AI Customer Service & Receptionist",
   "Conversational AI Chatbots",
   "Smart Website AI Integration",
   "Full Custom AI Solution & CRM Automations",
   "AI Marketing & Content Systems",
-  "General Consultation & Strategy"
+  "General Consultation & Strategy",
+  "Other"
 ];
 
-// Production n8n Webhook provided by user
-const PRODUCTION_N8N_WEBHOOK = "https://n8n.srv1310032.hstgr.cloud/webhook/gbp-review";
+// Production Make.com Webhook provided by user
+const PRODUCTION_MAKE_WEBHOOK = "https://hook.us2.make.com/cmmqxn225heqftqkn3bd6q37eydnv2qs";
 
-// Pre-built n8n workflow JSON ready for import
-const N8N_WORKFLOW_TEMPLATE = {
-  name: "Blyntic - Google Review & Feedback Automation",
-  nodes: [
-    {
-      parameters: {
-        httpMethod: "POST",
-        path: "gbp-review",
-        responseMode: "responseNode",
-        options: {}
-      },
-      name: "Review Webhook Trigger",
-      type: "n8n-nodes-base.webhook",
-      typeVersion: 1,
-      position: [250, 300]
-    },
-    {
-      parameters: {
-        conditions: {
-          number: [
-            {
-              value1: "={{ $json.body.rating }}",
-              operation: "largerEqual",
-              value2: 4
-            }
-          ]
-        }
-      },
-      name: "Check Positive Review (>=4)",
-      type: "n8n-nodes-base.if",
-      typeVersion: 1,
-      position: [480, 300]
-    },
-    {
-      parameters: {
-        text: "=🌟 *New 5-Star Google Review Flow Started!*\n*Reviewer:* {{ $json.body.reviewerName }} ({{ $json.body.reviewerEmail }})\n*Company:* {{ $json.body.companyName || 'N/A' }}\n*Rating:* {{ $json.body.rating }} / 5 ⭐\n*Review:* \"{{ $json.body.reviewText }}\"\n*Tags:* {{ $json.body.tags.join(', ') }}\n*Google Redirect Clicked:* {{ $json.body.isGoogleRedirectTriggered ? 'Yes' : 'Pending' }}"
-      },
-      name: "Notify Slack Positive Channel",
-      type: "n8n-nodes-base.slack",
-      typeVersion: 1,
-      position: [750, 200]
-    },
-    {
-      parameters: {
-        text: "=⚠️ *URGENT: Review Follow-up Needed!*\n*Customer:* {{ $json.body.reviewerName }} ({{ $json.body.reviewerEmail }})\n*Rating:* {{ $json.body.rating }} / 5 ⚠️\n*Feedback:* \"{{ $json.body.reviewText }}\"\n*Action Required:* Contact customer within 24 hours to resolve issue."
-      },
-      name: "Urgent Slack Alert (Service Recovery)",
-      type: "n8n-nodes-base.slack",
-      typeVersion: 1,
-      position: [750, 420]
-    },
-    {
-      parameters: {
-        respondWith: "json",
-        responseBody: "={\n  \"success\": true,\n  \"status\": \"processed_by_n8n\",\n  \"rating\": {{ $json.body.rating }}\n}"
-      },
-      name: "Respond to Webhook",
-      type: "n8n-nodes-base.respondToWebhook",
-      typeVersion: 1,
-      position: [1000, 300]
-    }
-  ],
-  connections: {
-    "Review Webhook Trigger": {
-      main: [[{ node: "Check Positive Review (>=4)", type: "main", index: 0 }]]
-    },
-    "Check Positive Review (>=4)": {
-      main: [
-        [{ node: "Notify Slack Positive Channel", type: "main", index: 0 }],
-        [{ node: "Urgent Slack Alert (Service Recovery)", type: "main", index: 0 }]
-      ]
-    },
-    "Notify Slack Positive Channel": {
-      main: [[{ node: "Respond to Webhook", type: "main", index: 0 }]]
-    },
-    "Urgent Slack Alert (Service Recovery)": {
-      main: [[{ node: "Respond to Webhook", type: "main", index: 0 }]]
-    }
-  }
+// Sample Data Structure sent to Make.com for Google Business Profile scenario mapping
+const MAKE_DATA_STRUCTURE = {
+  event: "google_business_review_submitted",
+  targetPlatform: "Google Business Profile",
+  timestamp: "2026-10-22T05:25:00.000Z",
+  formattedDate: "22/10/2026, 6:25:00 pm",
+  rating: 5,
+  isPositiveReview: true,
+  isFiveStar: true,
+  reviewerName: "Customer Name",
+  reviewerEmail: "customer@company.co.nz",
+  reviewerPhone: "+64 22 123 4567",
+  companyName: "Client Company Ltd",
+  serviceUsed: "Apps Development (iOS & Android)",
+  tags: ["⚡ Instant Lead Capture & Response", "🤖 24/7 AI Phone Receptionist", "💰 High ROI & Cut Operational Costs"],
+  tagsString: "⚡ Instant Lead Capture & Response, 🤖 24/7 AI Phone Receptionist, 💰 High ROI & Cut Operational Costs",
+  reviewText: "Blyntic automated our business phone bookings and customer service seamlessly! High ROI and stellar team.",
+  recommend: true,
+  sentiment: "positive",
+  googleReviewRedirectUrl: "https://search.google.com/local/writereview?placeid=ChIJ-3-BlynticNZ",
+  source: "blyntic_review_portal"
 };
 
 const ReviewCollector: React.FC = () => {
@@ -138,6 +84,7 @@ const ReviewCollector: React.FC = () => {
   const [reviewerPhone, setReviewerPhone] = useState<string>('');
   const [companyName, setCompanyName] = useState<string>('');
   const [serviceUsed, setServiceUsed] = useState<string>(SERVICE_OPTIONS[0]);
+  const [otherServiceText, setOtherServiceText] = useState<string>('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [reviewText, setReviewText] = useState<string>('');
   const [recommend, setRecommend] = useState<boolean>(true);
@@ -147,12 +94,12 @@ const ReviewCollector: React.FC = () => {
     return localStorage.getItem('blyntic_google_review_url') || 
       'https://search.google.com/local/writereview?placeid=ChIJ-3-BlynticNZ';
   });
-  const [n8nWebhookUrl, setN8nWebhookUrl] = useState<string>(() => {
-    const stored = localStorage.getItem('blyntic_n8n_webhook_url');
-    if (stored && stored.startsWith('http') && !stored.includes('your-n8n-instance')) {
+  const [makeWebhookUrl, setMakeWebhookUrl] = useState<string>(() => {
+    const stored = localStorage.getItem('blyntic_make_webhook_url');
+    if (stored && stored.startsWith('http') && stored.includes('make.com')) {
       return stored;
     }
-    return PRODUCTION_N8N_WEBHOOK;
+    return PRODUCTION_MAKE_WEBHOOK;
   });
   const [serverHasWebhook, setServerHasWebhook] = useState<boolean>(true);
   const [webhookDeliveryInfo, setWebhookDeliveryInfo] = useState<{
@@ -183,8 +130,11 @@ const ReviewCollector: React.FC = () => {
         if (data.defaultGoogleReviewUrl && !localStorage.getItem('blyntic_google_review_url')) {
           setGoogleReviewUrl(data.defaultGoogleReviewUrl);
         }
-        if (data.webhookUrl && (!localStorage.getItem('blyntic_n8n_webhook_url') || localStorage.getItem('blyntic_n8n_webhook_url')?.includes('your-n8n-instance'))) {
-          setN8nWebhookUrl(data.webhookUrl);
+        if (data.makeWebhookUrl || data.webhookUrl) {
+          const url = data.makeWebhookUrl || data.webhookUrl;
+          if (!localStorage.getItem('blyntic_make_webhook_url') || !localStorage.getItem('blyntic_make_webhook_url')?.includes('make.com')) {
+            setMakeWebhookUrl(url);
+          }
         }
         setServerHasWebhook(Boolean(data.hasServerWebhookConfigured));
       })
@@ -218,14 +168,14 @@ const ReviewCollector: React.FC = () => {
   };
 
   const handleCopyWorkflowJson = () => {
-    navigator.clipboard.writeText(JSON.stringify(N8N_WORKFLOW_TEMPLATE, null, 2));
+    navigator.clipboard.writeText(JSON.stringify(MAKE_DATA_STRUCTURE, null, 2));
     setCopiedWorkflow(true);
     setTimeout(() => setCopiedWorkflow(false), 3000);
   };
 
   const handleSaveSettings = () => {
     localStorage.setItem('blyntic_google_review_url', googleReviewUrl);
-    localStorage.setItem('blyntic_n8n_webhook_url', n8nWebhookUrl);
+    localStorage.setItem('blyntic_make_webhook_url', makeWebhookUrl);
     setShowSettingsModal(false);
   };
 
@@ -235,21 +185,25 @@ const ReviewCollector: React.FC = () => {
       const res = await fetch('/api/reviews/test-webhook', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ webhookUrl: n8nWebhookUrl || undefined })
+        body: JSON.stringify({ webhookUrl: makeWebhookUrl || undefined })
       });
       const data = await res.json();
       if (res.ok && data.success) {
         setTestWebhookStatus({
           loading: false,
           success: true,
-          message: `Webhook received payload successfully! HTTP ${data.status} (${data.latencyMs}ms)`,
+          message: `Make.com webhook received payload successfully! HTTP ${data.status} (${data.latencyMs}ms)`,
           latency: data.latencyMs
         });
       } else {
+        let hint = data.error || `HTTP ${data.status}`;
+        if (data.status === 410 || hint.includes('no scenario listening')) {
+          hint = "Reached Make.com server! Note: In your Make.com scenario, make sure to click 'Run once' (or toggle the scenario ON) so it listens for new webhooks.";
+        }
         setTestWebhookStatus({
           loading: false,
           success: false,
-          message: data.error || `Failed with HTTP ${data.status}`
+          message: hint
         });
       }
     } catch (err: any) {
@@ -293,17 +247,26 @@ const ReviewCollector: React.FC = () => {
     }
 
     setIsSubmitting(true);
-    const activeWebhook = n8nWebhookUrl || PRODUCTION_N8N_WEBHOOK;
+    const activeWebhook = makeWebhookUrl || PRODUCTION_MAKE_WEBHOOK;
+    const resolvedService = serviceUsed === 'Other' && otherServiceText.trim()
+      ? `Other (${otherServiceText.trim()})`
+      : serviceUsed;
+
     const submissionPayload = {
+      event: 'google_business_review_submitted',
+      targetPlatform: 'Google Business Profile',
       rating,
       reviewerName,
       reviewerEmail,
       reviewerPhone,
       companyName,
-      serviceUsed,
+      serviceUsed: resolvedService,
       tags: selectedTags,
+      tagsString: selectedTags.join(', '),
       reviewText,
       recommend,
+      isPositiveReview: rating >= 4,
+      isFiveStar: rating === 5,
       customWebhookUrl: activeWebhook,
       metadata: {
         pageUrl: window.location.href,
@@ -313,7 +276,7 @@ const ReviewCollector: React.FC = () => {
     };
 
     try {
-      // Send to backend proxy -> n8n webhook
+      // 1. Send via server endpoint (forwards to Make.com reliably without browser extension/CORS blockers)
       const res = await fetch('/api/reviews/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -324,13 +287,23 @@ const ReviewCollector: React.FC = () => {
         setWebhookDeliveryInfo({
           delivered: Boolean(data.webhook.delivered),
           status: data.webhook.status,
-          message: data.webhook.message || (data.webhook.delivered ? "Delivered to n8n successfully" : "Dispatched to n8n webhook")
+          message: data.webhook.message || (data.webhook.delivered ? "Delivered to Make.com successfully" : "Dispatched to Make.com webhook")
         });
       }
 
+      // 2. Direct browser fallback dispatch to Make.com webhook (best-effort redundancy)
+      try {
+        fetch(activeWebhook, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(submissionPayload),
+          mode: 'no-cors'
+        }).catch(() => {});
+      } catch (_) {}
+
       // Track Meta Lead event
       trackMetaLead({
-        content_name: 'Google Review Submission',
+        content_name: 'Google Review Submission (Make.com)',
         currency: 'NZD',
         value: rating >= 4 ? 100 : 20
       });
@@ -344,7 +317,7 @@ const ReviewCollector: React.FC = () => {
       window.scrollTo({ top: 100, behavior: 'smooth' });
     } catch (err) {
       console.error('Review submission error:', err);
-      // Still show success screen to customer so their flow is not broken
+      // Still show completion screen to customer so their flow is uninterrupted
       setIsSubmitted(true);
     } finally {
       setIsSubmitting(false);
@@ -392,24 +365,6 @@ const ReviewCollector: React.FC = () => {
           </Reveal>
         </div>
 
-        {/* Integration / Admin Config Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-2 bg-white/80 backdrop-blur-xs border border-slate-200/70 rounded-2xl p-3 px-4 mb-6 shadow-xs text-xs text-slate-600">
-          <div className="flex items-center gap-2">
-            <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span className="font-medium text-slate-800">Automated Pipeline:</span>
-            <span className="font-mono text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200/60 font-semibold">
-              n8n: /webhook/gbp-review
-            </span>
-          </div>
-          <button
-            onClick={() => setShowSettingsModal(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition-colors cursor-pointer"
-          >
-            <Settings className="w-3.5 h-3.5" />
-            <span>Webhook Settings</span>
-          </button>
-        </div>
-
         {/* SUCCESS / COMPLETION STATE */}
         {isSubmitted ? (
           <Reveal>
@@ -431,12 +386,8 @@ const ReviewCollector: React.FC = () => {
                       Your 5-Star Experience is Recorded!
                     </h2>
                     <p className="text-slate-600 max-w-lg mx-auto text-sm md:text-base mb-3">
-                      Your feedback has been submitted to our n8n automation pipeline. One final 10-second step will help us tremendously on Google:
+                      Your feedback has been recorded! One final quick step will help us tremendously on Google:
                     </p>
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-mono">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>Transmitted to n8n: /webhook/gbp-review</span>
-                    </div>
                   </div>
 
                   {/* Auto-Copied Banner */}
@@ -493,7 +444,7 @@ const ReviewCollector: React.FC = () => {
                   </div>
 
                   <div className="pt-4 border-t border-slate-100 flex items-center justify-center gap-4 text-xs text-slate-400">
-                    <span>Submitted to n8n webhook</span>
+                    <span>Verified Review Submission</span>
                     <span>•</span>
                     <button
                       onClick={() => {
@@ -522,7 +473,7 @@ const ReviewCollector: React.FC = () => {
                       Thank You for Your Honest Feedback
                     </h2>
                     <p className="text-slate-600 max-w-lg mx-auto text-sm md:text-base leading-relaxed">
-                      At Blyntic, we take client satisfaction personally. We have dispatched an urgent alert to Jude Al-Attraqchi and our leadership team via n8n. We will contact you within 24 hours to address this and make things right.
+                      At Blyntic, we take client satisfaction personally. We have dispatched an alert to Jude Al-Attraqchi and our leadership team via Make.com. We will contact you within 24 hours to address this and make things right.
                     </p>
                   </div>
 
@@ -697,7 +648,7 @@ const ReviewCollector: React.FC = () => {
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Company / Clinic Name <span className="text-slate-400 font-normal">(Optional)</span>
+                    Company Name <span className="text-slate-400 font-normal">(Optional)</span>
                   </label>
                   <div className="relative">
                     <Building2 className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -734,15 +685,31 @@ const ReviewCollector: React.FC = () => {
                   <label className="block text-xs font-semibold text-slate-700 mb-1.5">
                     Primary Service Received
                   </label>
-                  <select
-                    value={serviceUsed}
-                    onChange={(e) => setServiceUsed(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-hidden text-sm bg-white"
-                  >
-                    {SERVICE_OPTIONS.map((svc) => (
-                      <option key={svc} value={svc}>{svc}</option>
-                    ))}
-                  </select>
+                  <div className="relative">
+                    <Briefcase className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <select
+                      value={serviceUsed}
+                      onChange={(e) => setServiceUsed(e.target.value)}
+                      className="w-full appearance-none pl-11 pr-10 py-3 rounded-2xl border-2 border-slate-200 bg-white text-slate-800 text-sm font-medium hover:border-slate-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-500/10 outline-hidden transition-all shadow-xs cursor-pointer"
+                    >
+                      {SERVICE_OPTIONS.map((svc) => (
+                        <option key={svc} value={svc}>{svc}</option>
+                      ))}
+                    </select>
+                    <ChevronDown className="w-4 h-4 text-slate-400 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+
+                  {serviceUsed === 'Other' && (
+                    <div className="mt-2.5">
+                      <input
+                        type="text"
+                        value={otherServiceText}
+                        onChange={(e) => setOtherServiceText(e.target.value)}
+                        placeholder="Please specify the service we provided..."
+                        className="w-full px-4 py-2.5 rounded-2xl border-2 border-blue-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-500/10 outline-hidden text-sm text-slate-800 placeholder:text-slate-400 bg-blue-50/30"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -797,7 +764,7 @@ const ReviewCollector: React.FC = () => {
                   )}
                 </button>
                 <p className="text-center text-xs text-slate-400 mt-2.5">
-                  Submissions are automatically processed via n8n automation webhook and forwarded to Google Business Profile.
+                  Submissions are safely recorded and ready to paste directly to your Google Business Profile review.
                 </p>
               </div>
 
@@ -816,7 +783,7 @@ const ReviewCollector: React.FC = () => {
 
       </div>
 
-      {/* N8N & GOOGLE CONFIGURATION MODAL (ADMIN / DEVELOPER HUB) */}
+      {/* MAKE.COM & GOOGLE CONFIGURATION MODAL (ADMIN / DEVELOPER HUB) */}
       {showSettingsModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 overflow-y-auto">
           <div className="bg-white w-full max-w-2xl rounded-3xl p-6 md:p-8 shadow-2xl border border-slate-200 relative my-8">
@@ -828,37 +795,37 @@ const ReviewCollector: React.FC = () => {
             </button>
 
             <div className="flex items-center gap-2.5 mb-2">
-              <div className="p-2 rounded-xl bg-orange-100 text-orange-600">
+              <div className="p-2 rounded-xl bg-purple-100 text-purple-700">
                 <Code2 className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-slate-900">n8n Webhook & Google Business Profile Settings</h3>
-                <p className="text-xs text-slate-500">Connect this page directly to your live n8n workflow</p>
+                <h3 className="text-lg font-bold text-slate-900">Make.com Webhook & Google Business Profile Settings</h3>
+                <p className="text-xs text-slate-500">Connected directly to your Make.com Google Business Profile scenario</p>
               </div>
             </div>
 
             <div className="space-y-5 mt-6 text-left">
-              {/* n8n Webhook URL */}
+              {/* Make.com Webhook URL */}
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                    n8n Webhook Endpoint URL
+                    Make.com Webhook Endpoint URL
                   </label>
                   {serverHasWebhook && (
                     <span className="text-[11px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full font-medium">
-                      Server default active
+                      Production Active
                     </span>
                   )}
                 </div>
                 <input
                   type="url"
-                  value={n8nWebhookUrl}
-                  onChange={(e) => setN8nWebhookUrl(e.target.value)}
-                  placeholder="https://n8n.srv1310032.hstgr.cloud/webhook/gbp-review"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 text-sm font-mono"
+                  value={makeWebhookUrl}
+                  onChange={(e) => setMakeWebhookUrl(e.target.value)}
+                  placeholder="https://hook.us2.make.com/cmmqxn225heqftqkn3bd6q37eydnv2qs"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 text-sm font-mono text-slate-800"
                 />
                 <p className="text-[11px] text-slate-500 mt-1">
-                  Default: <code>https://n8n.srv1310032.hstgr.cloud/webhook/gbp-review</code>
+                  Active Webhook: <code className="text-purple-700 font-semibold">https://hook.us2.make.com/cmmqxn225heqftqkn3bd6q37eydnv2qs</code>
                 </p>
               </div>
 
@@ -866,14 +833,14 @@ const ReviewCollector: React.FC = () => {
               <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <span className="text-xs font-bold text-slate-700">Test Webhook Connectivity</span>
-                    <p className="text-[11px] text-slate-500">Sends a live sample review ping to verify your n8n trigger node.</p>
+                    <span className="text-xs font-bold text-slate-700">Test Make.com Connectivity</span>
+                    <p className="text-[11px] text-slate-500">Sends a sample review bundle to Make.com so you can map data in your scenario.</p>
                   </div>
                   <button
                     type="button"
                     onClick={handleTestWebhook}
                     disabled={testWebhookStatus.loading}
-                    className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                    className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
                     <Send className={`w-3.5 h-3.5 ${testWebhookStatus.loading ? 'animate-spin' : ''}`} />
                     <span>{testWebhookStatus.loading ? 'Testing...' : 'Test Webhook'}</span>
@@ -884,12 +851,12 @@ const ReviewCollector: React.FC = () => {
                   <div className={`mt-3 p-2.5 rounded-xl text-xs font-mono flex items-center gap-2 ${
                     testWebhookStatus.success
                       ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                      : 'bg-red-50 text-red-800 border border-red-200'
+                      : 'bg-amber-50 text-amber-800 border border-amber-200'
                   }`}>
                     {testWebhookStatus.success ? (
                       <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                     ) : (
-                      <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+                      <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
                     )}
                     <span>{testWebhookStatus.message}</span>
                   </div>
@@ -914,26 +881,26 @@ const ReviewCollector: React.FC = () => {
                 </div>
               </div>
 
-              {/* Ready-to-use n8n Workflow JSON */}
+              {/* Make.com Payload Schema Preview */}
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                    Ready-to-Use n8n Workflow Blueprint
+                    Make.com Data Mapping Schema (JSON)
                   </label>
                   <button
                     type="button"
                     onClick={handleCopyWorkflowJson}
-                    className="text-xs text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-1"
+                    className="text-xs text-purple-600 hover:text-purple-800 font-semibold flex items-center gap-1"
                   >
                     <Copy className="w-3.5 h-3.5" />
-                    <span>{copiedWorkflow ? 'Copied JSON!' : 'Copy Workflow JSON'}</span>
+                    <span>{copiedWorkflow ? 'Copied JSON!' : 'Copy Schema JSON'}</span>
                   </button>
                 </div>
                 <div className="bg-slate-900 text-slate-200 rounded-xl p-3 text-[11px] font-mono overflow-x-auto max-h-36">
-                  <pre>{JSON.stringify(N8N_WORKFLOW_TEMPLATE, null, 2)}</pre>
+                  <pre>{JSON.stringify(MAKE_DATA_STRUCTURE, null, 2)}</pre>
                 </div>
                 <p className="text-[11px] text-slate-500 mt-1">
-                  Simply open your n8n canvas and press <kbd className="px-1 py-0.5 bg-slate-100 border rounded text-[10px]">Ctrl+V</kbd> to paste this complete 4-node flow!
+                  Use these keys in your Make.com scenario (e.g. <code>rating</code>, <code>reviewerName</code>, <code>reviewerEmail</code>, <code>reviewText</code>, <code>tags</code>).
                 </p>
               </div>
 
