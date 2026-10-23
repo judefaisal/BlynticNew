@@ -25,7 +25,7 @@ async function startServer() {
     // Permissive access headers for metadata discovery
     if (
       req.path === "/robots.txt" ||
-      req.path === "/sitemap.xml" ||
+      req.path.includes("sitemap") ||
       req.path === "/llms.txt" ||
       req.path === "/llms-full.txt" ||
       req.path.startsWith("/api/seo/")
@@ -49,8 +49,41 @@ async function startServer() {
     }
   });
 
+  // Serve Solutions & Google Business Profile Services Sitemap
+  app.get(["/sitemap-solutions.xml", "/sitemap-solutions", "/solutions-sitemap.xml"], (req, res) => {
+    const filePath = path.join(process.cwd(), "public", "sitemap-solutions.xml");
+    if (fs.existsSync(filePath)) {
+      res.type("application/xml; charset=utf-8");
+      res.sendFile(filePath);
+    } else {
+      res.status(404).send("Solutions sitemap not found");
+    }
+  });
+
+  // Serve Blog & Knowledge Base Sitemap
+  app.get(["/sitemap-blog.xml", "/sitemap-blog", "/blog-sitemap.xml"], (req, res) => {
+    const filePath = path.join(process.cwd(), "public", "sitemap-blog.xml");
+    if (fs.existsSync(filePath)) {
+      res.type("application/xml; charset=utf-8");
+      res.sendFile(filePath);
+    } else {
+      res.status(404).send("Blog sitemap not found");
+    }
+  });
+
+  // Serve Master Sitemap Index
+  app.get(["/sitemap_index.xml", "/sitemap-index.xml"], (req, res) => {
+    const filePath = path.join(process.cwd(), "public", "sitemap_index.xml");
+    if (fs.existsSync(filePath)) {
+      res.type("application/xml; charset=utf-8");
+      res.sendFile(filePath);
+    } else {
+      res.status(404).send("Sitemap index not found");
+    }
+  });
+
   // Explicitly serve sitemap.xml and aliases with application/xml UTF-8
-  app.get(["/sitemap.xml", "/sitemap", "/sitemaps.xml", "/sitemap_index.xml"], (req, res) => {
+  app.get(["/sitemap.xml", "/sitemap", "/sitemaps.xml"], (req, res) => {
     const sitemapPath = path.join(process.cwd(), "public", "sitemap.xml");
     if (fs.existsSync(sitemapPath)) {
       res.type("application/xml; charset=utf-8");

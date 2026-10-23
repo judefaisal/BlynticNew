@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Solutions & Google Business Profile Services Sitemap -->
+  <sitemap>
+    <loc>https://www.blyntic.co.nz/sitemap-solutions.xml</loc>
+    <lastmod>2026-10-22</lastmod>
+  </sitemap>
+
+  <!-- Blog & Editorial Knowledge Base Sitemap -->
+  <sitemap>
+    <loc>https://www.blyntic.co.nz/sitemap-blog.xml</loc>
+    <lastmod>2026-10-22</lastmod>
+  </sitemap>
+
+  <!-- Complete Site Index Sitemap -->
+  <sitemap>
+    <loc>https://www.blyntic.co.nz/sitemap.xml</loc>
+    <lastmod>2026-10-22</lastmod>
+  </sitemap>
+
+</sitemapindex>

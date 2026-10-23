@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+  <!-- ==================================================================== -->
+  <!-- BLYNTIC SOLUTIONS & GOOGLE BUSINESS PROFILE SERVICES SITEMAP        -->
+  <!-- Optimized for Google Business Profile Service Links & Local Search   -->
+  <!-- ==================================================================== -->
+
+  <!-- Primary Business Homepage -->
+  <url>
+    <loc>https://www.blyntic.co.nz/</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Google Business Profile Appointment / Consultation Link -->
+  <url>
+    <loc>https://www.blyntic.co.nz/talk-to-sales</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Google Business Profile Review Collection Tool -->
+  <url>
+    <loc>https://www.blyntic.co.nz/review</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Solution 1: Apps Development (iOS & Android) -->
+  <url>
+    <loc>https://www.blyntic.co.nz/apps-development</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Solution 2: AI Social Media Reply (Instagram DMs, Messenger & WhatsApp) -->
+  <url>
+    <loc>https://www.blyntic.co.nz/ai-social-media-reply</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Solution 3: AI Customer Service & Voice Telephony Receptionist -->
+  <url>
+    <loc>https://www.blyntic.co.nz/ai-customer-service</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Solution 4: Conversational AI Chatbots -->
+  <url>
+    <loc>https://www.blyntic.co.nz/ai-chatbots</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Solution 5: Smart Website & LLM Integration -->
+  <url>
+    <loc>https://www.blyntic.co.nz/smart-website</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Solution 6: Full Custom AI Solution & Enterprise CRM Workflows -->
+  <url>
+    <loc>https://www.blyntic.co.nz/full-ai-solution</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Solution 7: AI Marketing & Automated Campaigns -->
+  <url>
+    <loc>https://www.blyntic.co.nz/ai-marketing</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Direct Contact & Strategy Inquiries -->
+  <url>
+    <loc>https://www.blyntic.co.nz/contact</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Knowledge FAQs -->
+  <url>
+    <loc>https://www.blyntic.co.nz/faq</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+</urlset>

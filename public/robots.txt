@@ -118,5 +118,8 @@ Allow: /
 # Sitemaps & LLM Discovery Files
 # ------------------------------------------------------------------------------
 Sitemap: https://www.blyntic.co.nz/sitemap.xml
+Sitemap: https://www.blyntic.co.nz/sitemap-solutions.xml
+Sitemap: https://www.blyntic.co.nz/sitemap-blog.xml
+Sitemap: https://www.blyntic.co.nz/sitemap_index.xml
 # LLM Context: https://www.blyntic.co.nz/llms.txt
 # LLM Full Knowledge: https://www.blyntic.co.nz/llms-full.txt

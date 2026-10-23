@@ -26,6 +26,7 @@ const Contact = lazy(() => import('./components/ui/travel-connect-signin-1'));
 const FAQPage = lazy(() => import('./components/FAQPage'));
 const PrivacyPolicy = lazy(() => import('./components/PrivacyPolicy'));
 const ReviewCollector = lazy(() => import('./components/ReviewCollector'));
+const GBPSitemap = lazy(() => import('./components/GBPSitemap'));
 
 const LoadingSpinner = () => (
   <div className="min-h-screen flex items-center justify-center bg-slate-50">
@@ -79,10 +80,11 @@ function App() {
   const isFAQPage = currentRoute === '/faq';
   const isPrivacyPolicyPage = currentRoute === '/privacy' || currentRoute.startsWith('/privacy');
   const isReviewPage = currentRoute === '/review' || currentRoute === '/reviews' || currentRoute === '/google-review';
+  const isSitemapPage = currentRoute === '/sitemap' || currentRoute === '/gbp-sitemap' || currentRoute === '/solutions-sitemap' || currentRoute === '/blog-sitemap';
 
   return (
     <main className="font-sans text-brand-black bg-white selection:bg-blue-200 selection:text-black">
-      <Navbar isTalkToSalesPage={isAppsDevelopmentPage || isTalkToSalesPage || isAISocialMediaReplyPage || isAICustomerServicePage || isAIChatbotsPage || isSmartWebsitePage || isFullAISolutionPage || isAIMarketingPage || isContactPage || isFAQPage || isPrivacyPolicyPage || isBlogPage || isBlogDetailPage || isReviewPage} />
+      <Navbar isTalkToSalesPage={isAppsDevelopmentPage || isTalkToSalesPage || isAISocialMediaReplyPage || isAICustomerServicePage || isAIChatbotsPage || isSmartWebsitePage || isFullAISolutionPage || isAIMarketingPage || isContactPage || isFAQPage || isPrivacyPolicyPage || isBlogPage || isBlogDetailPage || isReviewPage || isSitemapPage} />
       
       <Suspense fallback={<LoadingSpinner />}>
         {isAppsDevelopmentPage ? (
@@ -207,6 +209,19 @@ function App() {
               }} 
             />
             <ReviewCollector />
+          </>
+        ) : isSitemapPage ? (
+          <>
+            <StructuredData 
+              pageType="generic" 
+              serviceData={{
+                name: 'Google Business Profile & XML Sitemaps Hub',
+                description: 'Complete XML sitemaps for Google Search Console and service catalogue URLs formatted for Google Business Profile.',
+                category: 'Sitemaps & Directory',
+                url: '#/gbp-sitemap'
+              }} 
+            />
+            <GBPSitemap />
           </>
         ) : (
           <>

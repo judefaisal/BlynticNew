@@ -55,6 +55,7 @@ const Footer: React.FC = () => {
               <li><a href="#/contact" className="hover:text-black transition-colors">Contact</a></li>
               <li><a href="#/faq" className="hover:text-black transition-colors">AEO/GEO FAQs</a></li>
               <li><a href="#/privacy" className="hover:text-black transition-colors">Privacy Policy</a></li>
+              <li><a href="#/gbp-sitemap" className="hover:text-blue-600 transition-colors font-medium text-blue-600">GBP & Sitemaps Hub</a></li>
               <li><a href="/sitemap.xml" target="_blank" rel="noopener noreferrer" className="hover:text-black transition-colors">XML Sitemap</a></li>
             </ul>
           </div>
@@ -82,7 +83,8 @@ const Footer: React.FC = () => {
           <div className="flex gap-8">
             <a href="#/privacy" className="hover:text-black transition-colors">Privacy Policy</a>
             <a href="#/privacy#overview" className="hover:text-black transition-colors">Terms of Service</a>
-            <a href="/sitemap.xml" target="_blank" rel="noopener noreferrer" className="hover:text-black transition-colors">Sitemap</a>
+            <a href="#/gbp-sitemap" className="hover:text-black transition-colors">Sitemap Hub</a>
+            <a href="/sitemap.xml" target="_blank" rel="noopener noreferrer" className="hover:text-black transition-colors">XML Sitemaps</a>
             <a href="#/privacy#cookies-analytics" className="hover:text-black transition-colors">Cookies Settings</a>
           </div>
         </div>
