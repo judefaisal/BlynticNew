@@ -34,8 +34,14 @@ const Footer: React.FC = () => {
           {/* Links 1 */}
           <div>
             <h4 className="font-bold mb-6">Solutions</h4>
-            <ul className="space-y-4 text-gray-600">
+            <ul className="space-y-3 text-gray-600">
               <li><a href="#/apps-development" className="hover:text-black transition-colors font-medium text-blue-600">Apps Development (iOS & Android)</a></li>
+              <li><a href="#/ai-social-media-reply" className="hover:text-black transition-colors flex items-center gap-1.5 font-medium text-blue-600"><span>AI Social Media Reply</span><span className="text-[10px] bg-blue-100 text-blue-700 font-bold px-1.5 py-0.5 rounded-full">NEW</span></a></li>
+              <li><a href="#/ai-customer-service" className="hover:text-black transition-colors">AI Customer Service</a></li>
+              <li><a href="#/ai-chatbots" className="hover:text-black transition-colors">AI Chatbots</a></li>
+              <li><a href="#/smart-website" className="hover:text-black transition-colors">Smart Website</a></li>
+              <li><a href="#/full-ai-solution" className="hover:text-black transition-colors">Full AI Solution</a></li>
+              <li><a href="#/ai-marketing" className="hover:text-black transition-colors">AI Marketing</a></li>
             </ul>
           </div>
 
@@ -47,9 +53,9 @@ const Footer: React.FC = () => {
               <li><a href="#" className="hover:text-black transition-colors">Careers</a></li>
               <li><a href="#/blog" className="hover:text-black transition-colors">Blog</a></li>
               <li><a href="#/contact" className="hover:text-black transition-colors">Contact</a></li>
-              <li><a href="#/review" className="hover:text-blue-600 transition-colors font-medium flex items-center gap-1.5 text-blue-600"><span>Leave a Review</span> <span className="text-amber-500">⭐</span></a></li>
               <li><a href="#/faq" className="hover:text-black transition-colors">AEO/GEO FAQs</a></li>
               <li><a href="#/privacy" className="hover:text-black transition-colors">Privacy Policy</a></li>
+              <li><a href="/sitemap.xml" target="_blank" rel="noopener noreferrer" className="hover:text-black transition-colors">XML Sitemap</a></li>
             </ul>
           </div>
 
@@ -60,6 +66,12 @@ const Footer: React.FC = () => {
               <li><a href="mailto:jude@blyntic.co.nz" className="hover:text-black transition-colors">jude@blyntic.co.nz</a></li>
               <li>(+64) 223 037 330</li>
               <li>Auckland, New Zealand</li>
+              <li>
+                <a href="#/review" className="hover:text-blue-600 transition-colors font-medium flex items-center gap-1.5 text-blue-600">
+                  <span>Review Us</span>
+                  <span className="text-amber-500">⭐</span>
+                </a>
+              </li>
             </ul>
           </div>
         </div>
@@ -70,6 +82,7 @@ const Footer: React.FC = () => {
           <div className="flex gap-8">
             <a href="#/privacy" className="hover:text-black transition-colors">Privacy Policy</a>
             <a href="#/privacy#overview" className="hover:text-black transition-colors">Terms of Service</a>
+            <a href="/sitemap.xml" target="_blank" rel="noopener noreferrer" className="hover:text-black transition-colors">Sitemap</a>
             <a href="#/privacy#cookies-analytics" className="hover:text-black transition-colors">Cookies Settings</a>
           </div>
         </div>

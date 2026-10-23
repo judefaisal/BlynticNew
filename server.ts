@@ -49,8 +49,8 @@ async function startServer() {
     }
   });
 
-  // Explicitly serve sitemap.xml with application/xml UTF-8
-  app.get("/sitemap.xml", (req, res) => {
+  // Explicitly serve sitemap.xml and aliases with application/xml UTF-8
+  app.get(["/sitemap.xml", "/sitemap", "/sitemaps.xml", "/sitemap_index.xml"], (req, res) => {
     const sitemapPath = path.join(process.cwd(), "public", "sitemap.xml");
     if (fs.existsSync(sitemapPath)) {
       res.type("application/xml; charset=utf-8");

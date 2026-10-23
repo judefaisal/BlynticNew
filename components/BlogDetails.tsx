@@ -38,7 +38,7 @@ const BlogDetails: React.FC<BlogDetailsProps> = ({ slug: propSlug }) => {
       // Check static blogs first for instant response
       const staticMatch = staticBlogs.find(b => {
         const currentSlug = b.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-        return currentSlug === slug;
+        return currentSlug === slug || b.id === slug;
       });
 
       if (staticMatch) {

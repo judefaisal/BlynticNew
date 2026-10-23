@@ -21,6 +21,7 @@ const AIChatbots = lazy(() => import('./components/AIChatbots'));
 const SmartWebsite = lazy(() => import('./components/SmartWebsite'));
 const FullAISolution = lazy(() => import('./components/FullAISolution'));
 const AIMarketing = lazy(() => import('./components/AIMarketing'));
+const AISocialMediaReply = lazy(() => import('./components/AISocialMediaReply'));
 const Contact = lazy(() => import('./components/ui/travel-connect-signin-1'));
 const FAQPage = lazy(() => import('./components/FAQPage'));
 const PrivacyPolicy = lazy(() => import('./components/PrivacyPolicy'));
@@ -35,41 +36,53 @@ const LoadingSpinner = () => (
   </div>
 );
 
+const getNormalizedRoute = () => {
+  const hash = typeof window !== 'undefined' ? window.location.hash : '';
+  if (hash && hash.startsWith('#/')) {
+    return hash.replace(/^#/, '');
+  }
+  const pathname = typeof window !== 'undefined' ? window.location.pathname : '/';
+  if (pathname && pathname !== '/') {
+    return pathname.endsWith('/') ? pathname.slice(0, -1) : pathname;
+  }
+  return '/';
+};
+
 function App() {
-  const [currentHash, setCurrentHash] = useState(window.location.hash);
+  const [currentRoute, setCurrentRoute] = useState(getNormalizedRoute);
 
   useEffect(() => {
-    const handleHashChange = () => {
-      setCurrentHash(window.location.hash);
+    const handleRouteChange = () => {
+      setCurrentRoute(getNormalizedRoute());
       trackMetaPageView();
+      window.scrollTo(0, 0);
     };
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    window.addEventListener('hashchange', handleRouteChange);
+    window.addEventListener('popstate', handleRouteChange);
+    return () => {
+      window.removeEventListener('hashchange', handleRouteChange);
+      window.removeEventListener('popstate', handleRouteChange);
+    };
   }, []);
 
-  useEffect(() => {
-    if (currentHash === '#/talk-to-sales' || currentHash === '#/apps-development' || currentHash === '#/mobile-app-development' || currentHash === '#/ai-customer-service' || currentHash === '#/ai-chatbots' || currentHash === '#/smart-website' || currentHash === '#/full-ai-solution' || currentHash === '#/ai-marketing' || currentHash === '#/contact' || currentHash === '#/faq' || currentHash === '#/privacy' || currentHash.startsWith('#/privacy') || currentHash === '#/blog' || currentHash.startsWith('#/blog') || currentHash === '#/review' || currentHash === '#/reviews' || currentHash === '#/google-review') {
-      window.scrollTo(0, 0);
-    }
-  }, [currentHash]);
-
-  const isAppsDevelopmentPage = currentHash === '#/apps-development' || currentHash === '#/mobile-app-development';
-  const isTalkToSalesPage = currentHash === '#/talk-to-sales';
-  const isBlogPage = currentHash === '#/blog';
-  const isBlogDetailPage = currentHash.startsWith('#/blog/');
-  const isAICustomerServicePage = currentHash === '#/ai-customer-service';
-  const isAIChatbotsPage = currentHash === '#/ai-chatbots';
-  const isSmartWebsitePage = currentHash === '#/smart-website';
-  const isFullAISolutionPage = currentHash === '#/full-ai-solution';
-  const isAIMarketingPage = currentHash === '#/ai-marketing';
-  const isContactPage = currentHash === '#/contact';
-  const isFAQPage = currentHash === '#/faq';
-  const isPrivacyPolicyPage = currentHash === '#/privacy' || currentHash.startsWith('#/privacy');
-  const isReviewPage = currentHash === '#/review' || currentHash === '#/reviews' || currentHash === '#/google-review';
+  const isAppsDevelopmentPage = currentRoute === '/apps-development' || currentRoute === '/mobile-app-development';
+  const isTalkToSalesPage = currentRoute === '/talk-to-sales';
+  const isBlogPage = currentRoute === '/blog';
+  const isBlogDetailPage = currentRoute.startsWith('/blog/');
+  const isAISocialMediaReplyPage = currentRoute === '/ai-social-media-reply';
+  const isAICustomerServicePage = currentRoute === '/ai-customer-service';
+  const isAIChatbotsPage = currentRoute === '/ai-chatbots';
+  const isSmartWebsitePage = currentRoute === '/smart-website';
+  const isFullAISolutionPage = currentRoute === '/full-ai-solution';
+  const isAIMarketingPage = currentRoute === '/ai-marketing';
+  const isContactPage = currentRoute === '/contact';
+  const isFAQPage = currentRoute === '/faq';
+  const isPrivacyPolicyPage = currentRoute === '/privacy' || currentRoute.startsWith('/privacy');
+  const isReviewPage = currentRoute === '/review' || currentRoute === '/reviews' || currentRoute === '/google-review';
 
   return (
     <main className="font-sans text-brand-black bg-white selection:bg-blue-200 selection:text-black">
-      <Navbar isTalkToSalesPage={isAppsDevelopmentPage || isTalkToSalesPage || isAICustomerServicePage || isAIChatbotsPage || isSmartWebsitePage || isFullAISolutionPage || isAIMarketingPage || isContactPage || isFAQPage || isPrivacyPolicyPage || isBlogPage || isBlogDetailPage || isReviewPage} />
+      <Navbar isTalkToSalesPage={isAppsDevelopmentPage || isTalkToSalesPage || isAISocialMediaReplyPage || isAICustomerServicePage || isAIChatbotsPage || isSmartWebsitePage || isFullAISolutionPage || isAIMarketingPage || isContactPage || isFAQPage || isPrivacyPolicyPage || isBlogPage || isBlogDetailPage || isReviewPage} />
       
       <Suspense fallback={<LoadingSpinner />}>
         {isAppsDevelopmentPage ? (
@@ -155,6 +168,19 @@ function App() {
               }} 
             />
             <AIMarketing />
+          </>
+        ) : isAISocialMediaReplyPage ? (
+          <>
+            <StructuredData 
+              pageType="service" 
+              serviceData={{
+                name: 'AI Social Media Reply & Omnichannel Lead Automation',
+                description: 'Autonomous 24/7 AI replies for Instagram DMs, Facebook Messenger, and WhatsApp messages and calls. Qualifies inbound marketing leads and auto-submits structured executive summaries to your CRM and Make.com.',
+                category: 'Social Media Automation & Omnichannel AI',
+                url: '#/ai-social-media-reply'
+              }} 
+            />
+            <AISocialMediaReply />
           </>
         ) : isContactPage ? (
           <>

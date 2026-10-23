@@ -62,6 +62,12 @@ const Navbar: React.FC<NavbarProps> = ({ isTalkToSalesPage = false }) => {
 
   const solutionLinks = [
     { name: 'Apps Development (iOS & Android)', href: '#/apps-development' },
+    { name: 'AI Customer Service', href: '#/ai-customer-service' },
+    { name: 'AI Chatbots', href: '#/ai-chatbots' },
+    { name: 'Smart Website', href: '#/smart-website' },
+    { name: 'Full AI Solution', href: '#/full-ai-solution' },
+    { name: 'AI Marketing', href: '#/ai-marketing' },
+    { name: 'AI Social Media Reply', href: '#/ai-social-media-reply', isNew: true },
   ];
 
   return (
@@ -95,12 +101,13 @@ const Navbar: React.FC<NavbarProps> = ({ isTalkToSalesPage = false }) => {
              onMouseEnter={() => setIsSolutionsOpen(true)}
              onMouseLeave={() => setIsSolutionsOpen(false)}
            >
-             <a 
-               href="#/apps-development"
-               className="flex items-center gap-1 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 text-gray-600 hover:text-black hover:bg-gray-100"
+             <button 
+               type="button"
+               onClick={() => setIsSolutionsOpen(!isSolutionsOpen)}
+               className="flex items-center gap-1 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 text-gray-600 hover:text-black hover:bg-gray-100 cursor-pointer"
              >
-               Solution <ChevronDown className="w-4 h-4" />
-             </a>
+               Solution <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isSolutionsOpen ? 'rotate-180' : ''}`} />
+             </button>
              
              <AnimatePresence>
                {isSolutionsOpen && (
@@ -109,16 +116,21 @@ const Navbar: React.FC<NavbarProps> = ({ isTalkToSalesPage = false }) => {
                    animate={{ opacity: 1, y: 0 }}
                    exit={{ opacity: 0, y: 10 }}
                    transition={{ duration: 0.2 }}
-                   className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-72 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 overflow-hidden"
+                   className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-gray-100 py-2.5 z-50 overflow-hidden"
                  >
                    {solutionLinks.map((link, idx) => (
                      <a 
                        key={idx} 
                        href={link.href}
                        onClick={() => setIsSolutionsOpen(false)}
-                       className="block px-4 py-3 text-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors font-medium"
+                       className="flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50/70 transition-colors font-medium"
                      >
-                       {link.name}
+                       <span>{link.name}</span>
+                       {(link as any).isNew && (
+                         <span className="text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                           New
+                         </span>
+                       )}
                      </a>
                    ))}
                  </motion.div>
@@ -143,13 +155,6 @@ const Navbar: React.FC<NavbarProps> = ({ isTalkToSalesPage = false }) => {
              className="px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 text-gray-600 hover:text-black hover:bg-gray-100"
            >
              Blog
-           </a>
-           <a 
-             href="#/review"
-             className="px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 text-gray-600 hover:text-blue-600 hover:bg-gray-100 flex items-center gap-1"
-           >
-             <span>Review Us</span>
-             <span className="text-amber-500 text-xs">★</span>
            </a>
         </div>
 
@@ -223,23 +228,24 @@ const Navbar: React.FC<NavbarProps> = ({ isTalkToSalesPage = false }) => {
                 Company
               </a>
               
-              <div className="flex flex-col items-center gap-4 w-full px-8">
-                <a 
-                  href="#/apps-development"
-                  className="text-2xl font-display font-medium text-black flex items-center gap-2"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Solution <ChevronDown className="w-5 h-5 text-gray-400" />
-                </a>
-                <div className="flex flex-col items-center gap-3 bg-gray-50 w-full py-4 rounded-2xl">
+              <div className="flex flex-col items-center gap-3 w-full px-6">
+                <span className="text-xl font-display font-semibold text-black flex items-center gap-2">
+                  Solutions <ChevronDown className="w-5 h-5 text-gray-400" />
+                </span>
+                <div className="flex flex-col items-center gap-2.5 bg-gray-50 w-full py-4 px-3 rounded-2xl">
                   {solutionLinks.map((link, idx) => (
                     <a 
                       key={idx} 
                       href={link.href}
-                      className="text-lg text-blue-600 font-medium"
+                      className="text-sm font-medium text-gray-800 hover:text-blue-600 flex items-center justify-center gap-2 transition-colors py-1"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      {link.name}
+                      <span>{link.name}</span>
+                      {(link as any).isNew && (
+                        <span className="text-[10px] font-bold bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full">
+                          NEW
+                        </span>
+                      )}
                     </a>
                   ))}
                 </div>
@@ -265,14 +271,6 @@ const Navbar: React.FC<NavbarProps> = ({ isTalkToSalesPage = false }) => {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Blog
-              </a>
-              <a 
-                href="#/review"
-                className="text-2xl font-display font-medium text-blue-600 flex items-center gap-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <span>Review Us</span>
-                <span className="text-amber-500 text-xl">★</span>
               </a>
               
               <div className="mt-4">
