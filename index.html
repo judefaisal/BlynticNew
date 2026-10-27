@@ -43,15 +43,30 @@
 
     <!-- Unhandled WebSocket Error Guard for iFrame Dev Environment -->
     <script>
-      // Suppress benign iframe dev WebSocket closure errors
-      window.addEventListener('unhandledrejection', function(event) {
-        if (event && event.reason) {
-          var msg = event.reason.message || (typeof event.reason === 'string' ? event.reason : '');
-          if (msg.indexOf('WebSocket') !== -1 || (event.reason.name === 'Error' && msg.indexOf('closed without opened') !== -1)) {
+      (function() {
+        var isWsError = function(err) {
+          if (!err) return false;
+          var msg = String(err.message || err || '');
+          var stack = String(err.stack || '');
+          return msg.indexOf('WebSocket') !== -1 || 
+                 msg.indexOf('closed without opened') !== -1 ||
+                 stack.indexOf('@vite/client') !== -1;
+        };
+
+        window.addEventListener('unhandledrejection', function(event) {
+          if (event && isWsError(event.reason)) {
             event.preventDefault();
+            if (event.stopImmediatePropagation) event.stopImmediatePropagation();
           }
-        }
-      });
+        }, true);
+
+        window.addEventListener('error', function(event) {
+          if (event && (isWsError(event.error) || isWsError(event.message))) {
+            event.preventDefault();
+            if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+          }
+        }, true);
+      })();
     </script>
 
     <!-- Meta Pixel Code with Strict Pixel ID Validation -->
