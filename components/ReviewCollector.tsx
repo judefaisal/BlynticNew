@@ -94,13 +94,7 @@ const ReviewCollector: React.FC = () => {
     return localStorage.getItem('blyntic_google_review_url') || 
       'https://search.google.com/local/writereview?placeid=ChIJ-3-BlynticNZ';
   });
-  const [makeWebhookUrl, setMakeWebhookUrl] = useState<string>(() => {
-    const stored = localStorage.getItem('blyntic_make_webhook_url');
-    if (stored && stored.startsWith('http') && stored.includes('make.com')) {
-      return stored;
-    }
-    return PRODUCTION_MAKE_WEBHOOK;
-  });
+  const [makeWebhookUrl, setMakeWebhookUrl] = useState<string>(PRODUCTION_MAKE_WEBHOOK);
   const [serverHasWebhook, setServerHasWebhook] = useState<boolean>(true);
   const [webhookDeliveryInfo, setWebhookDeliveryInfo] = useState<{
     delivered?: boolean;
@@ -124,17 +118,12 @@ const ReviewCollector: React.FC = () => {
 
   // Load server config on mount
   useEffect(() => {
+    localStorage.setItem('blyntic_make_webhook_url', PRODUCTION_MAKE_WEBHOOK);
     fetch('/api/reviews/config')
       .then(res => res.json())
       .then(data => {
         if (data.defaultGoogleReviewUrl && !localStorage.getItem('blyntic_google_review_url')) {
           setGoogleReviewUrl(data.defaultGoogleReviewUrl);
-        }
-        if (data.makeWebhookUrl || data.webhookUrl) {
-          const url = data.makeWebhookUrl || data.webhookUrl;
-          if (!localStorage.getItem('blyntic_make_webhook_url') || !localStorage.getItem('blyntic_make_webhook_url')?.includes('make.com')) {
-            setMakeWebhookUrl(url);
-          }
         }
         setServerHasWebhook(Boolean(data.hasServerWebhookConfigured));
       })
@@ -276,30 +265,38 @@ const ReviewCollector: React.FC = () => {
     };
 
     try {
-      // 1. Send via server endpoint (forwards to Make.com reliably without browser extension/CORS blockers)
+      let deliveredByServer = false;
+
+      // 1. Send via server endpoint (forwards application/json to Make.com reliably without CORS blockers)
       const res = await fetch('/api/reviews/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(submissionPayload)
       });
-      const data = await res.json();
-      if (data?.webhook) {
-        setWebhookDeliveryInfo({
-          delivered: Boolean(data.webhook.delivered),
-          status: data.webhook.status,
-          message: data.webhook.message || (data.webhook.delivered ? "Delivered to Make.com successfully" : "Dispatched to Make.com webhook")
-        });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.webhook) {
+          deliveredByServer = Boolean(data.webhook.delivered);
+          setWebhookDeliveryInfo({
+            delivered: deliveredByServer,
+            status: data.webhook.status,
+            message: data.webhook.message || (deliveredByServer ? "Delivered to Make.com successfully" : "Dispatched to Make.com webhook")
+          });
+        }
       }
 
-      // 2. Direct browser fallback dispatch to Make.com webhook (best-effort redundancy)
-      try {
-        fetch(activeWebhook, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(submissionPayload),
-          mode: 'no-cors'
-        }).catch(() => {});
-      } catch (_) {}
+      // 2. Direct browser fallback ONLY if backend relay failed
+      if (!deliveredByServer) {
+        try {
+          await fetch(activeWebhook, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(submissionPayload),
+            mode: 'no-cors'
+          });
+        } catch (_) {}
+      }
 
       // Track Meta Lead event
       trackMetaLead({
@@ -317,7 +314,15 @@ const ReviewCollector: React.FC = () => {
       window.scrollTo({ top: 100, behavior: 'smooth' });
     } catch (err) {
       console.error('Review submission error:', err);
-      // Still show completion screen to customer so their flow is uninterrupted
+      // Fallback direct dispatch to Make.com webhook if server request failed
+      try {
+        await fetch(activeWebhook, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(submissionPayload),
+          mode: 'no-cors'
+        });
+      } catch (_) {}
       setIsSubmitted(true);
     } finally {
       setIsSubmitting(false);
